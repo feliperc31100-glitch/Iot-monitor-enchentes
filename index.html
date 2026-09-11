@@ -57,17 +57,17 @@
   </div>
 
   <script>
-    // 1. COLOQUE AS SUAS INFORMAÇÕES DO FIREBASE AQUI
+    // Credenciais do Firebase corrigidas e sem a barra no final da URL
     const firebaseConfig = {
-      apiKey: "COLOQUE_AQUI_A_SUA_API_KEY",
-      databaseURL: "COLOQUE_AQUI_O_LINK_DO_SEU_REALTIME_DATABASE"
+      apiKey: "AIzaSyBkrkes5jzJD7CsaYgq3Ycg2Q2nEpz5ci8",
+      databaseURL: "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com"
     };
 
-    // 2. Inicializa o Firebase
+    // Inicializa o Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // 3. Lê os dados em tempo real da pasta "/painel"
+    // Lê os dados em tempo real da pasta "/painel"
     database.ref('/painel').on('value', (snapshot) => {
       const data = snapshot.val();
       
