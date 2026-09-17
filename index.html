@@ -44,7 +44,7 @@
         // --- LÓGICA DE NOTIFICAÇÃO: AMARELO (Atenção) ---
         if (data.led2 === true) {
           if (!alertaAmareloEnviado) {
-            enviarNotificacaoTelegram("⚠️ ATENÇÃO: Nível Amarelo (Atenção) atingido no Monitor de Enchentes UMC!");
+            enviarNotificacaoTelegram("⚠️ ATENÇÃO: Nível Amarelo (Atenção) Risco de transbordamento!");
             alertaAmareloEnviado = true; 
           }
         } else {
@@ -55,7 +55,7 @@
         // --- LÓGICA DE NOTIFICAÇÃO: VERMELHO (Crítico) ---
         if (data.led3 === true) {
           if (!alertaVermelhoEnviado) {
-            enviarNotificacaoTelegram("🚨 PERIGO: Nível Vermelho (Crítico) atingido no Monitor de Enchentes UMC! Risco de transbordamento.");
+            enviarNotificacaoTelegram("🚨 PERIGO: Nível Vermelho (Crítico) Evacuação Imediata.");
             alertaVermelhoEnviado = true; 
           }
         } else {
