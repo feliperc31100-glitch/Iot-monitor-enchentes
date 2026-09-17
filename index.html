@@ -63,8 +63,8 @@
       databaseURL: "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com"
     };
 
-    // Configurações do Telegram
-    const botToken = 'COLOQUE_O_NOVO_TOKEN_AQUI'; 
+    // Configurações do Telegram - ATENÇÃO: COLOQUE SEU NOVO TOKEN ABAIXO
+    const botToken = 'COLOQUE_SEU_NOVO_TOKEN_AQUI'; 
     const chatId = '8594859524'; 
     
     // Variáveis de controle para não repetir as mensagens
@@ -100,7 +100,7 @@
         document.getElementById('lbl3').className = 'status status-3 ' + (data.led3 ? 'show' : '');
 
         // --- LÓGICA DE NOTIFICAÇÃO: AMARELO (Atenção) ---
-        if (data.led2 === true) {
+        if (data.led2) {
           if (!alertaAmareloEnviado) {
             enviarNotificacaoTelegram("⚠️ ATENÇÃO: Nível Amarelo (Atenção) Risco de transbordamento!");
             alertaAmareloEnviado = true; 
@@ -110,7 +110,7 @@
         }
 
         // --- LÓGICA DE NOTIFICAÇÃO: VERMELHO (Crítico) ---
-        if (data.led3 === true) {
+        if (data.led3) {
           if (!alertaVermelhoEnviado) {
             enviarNotificacaoTelegram("🚨 PERIGO: Nível Vermelho (Crítico) Evacuação Imediata.");
             alertaVermelhoEnviado = true; 
