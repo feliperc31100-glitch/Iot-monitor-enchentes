@@ -1,67 +1,26 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monitor de Enchentes - UMC</title>
-  
-  <!-- Importando o Firebase (Versão Compatível) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #1e1e2e; color: #fff; margin-top: 40px; }
-    .card { display: inline-block; background: #2b2b3b; padding: 40px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
-    
-    .umc-logo { font-size: 3em; font-weight: 900; color: #0055ff; margin-bottom: 30px; letter-spacing: 2px; }
-    .umc-sub { font-size: 0.3em; color: #ccc; display: block; margin-top: 5px; font-weight: normal; letter-spacing: 1px; }
-    
-    .led-container { display: flex; justify-content: center; gap: 30px; }
-    .led-wrapper { display: flex; flex-direction: column; align-items: center; width: 150px; }
-    
-    .led { width: 60px; height: 60px; border-radius: 50%; background: #444; border: 2px solid #555; transition: 0.3s; margin-bottom: 15px; }
-    .led1-on { background: #00ff66; box-shadow: 0 0 25px #00ff66; border-color: #00ff66; }
-    .led2-on { background: #ffaa00; box-shadow: 0 0 25px #ffaa00; border-color: #ffaa00; }
-    .led3-on { background: #ff0055; box-shadow: 0 0 25px #ff0055; border-color: #ff0055; }
-    
-    .status { font-size: 1.1em; font-weight: bold; opacity: 0.1; transition: 0.3s; }
-    .status.show { opacity: 1; }
-    .status-1 { color: #00ff66; }
-    .status-2 { color: #ffaa00; }
-    .status-3 { color: #ff0055; }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <div class="umc-logo">
-      UMC
-      <span class="umc-sub">UNIVERSIDADE DE MOGI DAS CRUZES</span>
-    </div>
-
-    <div class="led-container">
-      <div class="led-wrapper">
-        <div id="led1" class="led"></div>
-        <div id="lbl1" class="status status-1">Verde<br>Seguro</div>
-      </div>
-      
-      <div class="led-wrapper">
-        <div id="led2" class="led"></div>
-        <div id="lbl2" class="status status-2">Amarelo<br>Atenção</div>
-      </div>
-      
-      <div class="led-wrapper">
-        <div id="led3" class="led"></div>
-        <div id="lbl3" class="status status-3">Vermelho<br>Crítico</div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Credenciais do Firebase corrigidas e sem a barra no final da URL
+<script>
+    // Credenciais do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBkrkes5jzJD7CsaYgq3Ycg2Q2nEpz5ci8",
       databaseURL: "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com"
     };
+
+    // Configurações do Telegram
+    const botToken = 'COLOQUE_SEU_TOKEN_AQUI'; 
+    const chatId = 'COLOQUE_SEU_CHAT_ID_AQUI'; 
+    
+    // Variáveis de controle para não repetir as mensagens
+    let alertaAmareloEnviado = false;
+    let alertaVermelhoEnviado = false;
+
+    // Função que dispara a requisição para o Telegram
+    function enviarNotificacaoTelegram(mensagem) {
+      const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(mensagem)}`;
+      
+      fetch(url)
+        .then(response => console.log("Notificação enviada com sucesso!"))
+        .catch(error => console.error("Erro ao enviar notificação:", error));
+    }
 
     // Inicializa o Firebase
     firebase.initializeApp(firebaseConfig);
@@ -72,7 +31,7 @@
       const data = snapshot.val();
       
       if (data) {
-        // Atualiza a cor dos LEDs com base no banco de dados
+        // Atualiza a cor dos LEDs
         document.getElementById('led1').className = 'led ' + (data.led1 ? 'led1-on' : '');
         document.getElementById('led2').className = 'led ' + (data.led2 ? 'led2-on' : '');
         document.getElementById('led3').className = 'led ' + (data.led3 ? 'led3-on' : '');
@@ -81,8 +40,28 @@
         document.getElementById('lbl1').className = 'status status-1 ' + (data.led1 ? 'show' : '');
         document.getElementById('lbl2').className = 'status status-2 ' + (data.led2 ? 'show' : '');
         document.getElementById('lbl3').className = 'status status-3 ' + (data.led3 ? 'show' : '');
+
+        // --- LÓGICA DE NOTIFICAÇÃO: AMARELO (Atenção) ---
+        if (data.led2 === true) {
+          if (!alertaAmareloEnviado) {
+            enviarNotificacaoTelegram("⚠️ ATENÇÃO: Nível Amarelo (Atenção) atingido no Monitor de Enchentes UMC!");
+            alertaAmareloEnviado = true; 
+          }
+        } else {
+          // Destrava se o LED amarelo apagar
+          alertaAmareloEnviado = false; 
+        }
+
+        // --- LÓGICA DE NOTIFICAÇÃO: VERMELHO (Crítico) ---
+        if (data.led3 === true) {
+          if (!alertaVermelhoEnviado) {
+            enviarNotificacaoTelegram("🚨 PERIGO: Nível Vermelho (Crítico) atingido no Monitor de Enchentes UMC! Risco de transbordamento.");
+            alertaVermelhoEnviado = true; 
+          }
+        } else {
+          // Destrava se o LED vermelho apagar
+          alertaVermelhoEnviado = false; 
+        }
       }
     });
   </script>
-</body>
-</html>
