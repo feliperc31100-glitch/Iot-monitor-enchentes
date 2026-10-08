@@ -5,21 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Monitor de Enchentes - UMC</title>
   
-  <!-- Importando o Firebase (Versão Compatível) -->
+  <!-- Importando o Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <style>
     body { font-family: Arial, sans-serif; text-align: center; background: #1e1e2e; color: #fff; margin-top: 40px; }
-    .card { display: inline-block; background: #2b2b3b; padding: 40px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+    .card { display: inline-block; background: #2b2b3b; padding: 40px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); min-width: 400px; }
     
-    .umc-logo { font-size: 3em; font-weight: 900; color: #0055ff; margin-bottom: 30px; letter-spacing: 2px; }
+    .umc-logo { font-size: 3em; font-weight: 900; color: #0055ff; margin-bottom: 20px; letter-spacing: 2px; }
     .umc-sub { font-size: 0.3em; color: #ccc; display: block; margin-top: 5px; font-weight: normal; letter-spacing: 1px; }
     
-    .led-container { display: flex; justify-content: center; gap: 30px; }
-    .led-wrapper { display: flex; flex-direction: column; align-items: center; width: 150px; }
+    /* Estilo das Abas */
+    .tabs { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; }
+    .tab-btn { background: #444; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 1em; transition: 0.3s; }
+    .tab-btn:hover { background: #555; }
+    .tab-btn.active { background: #0055ff; font-weight: bold; }
     
+    /* Conteúdo das abas */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* LEDs */
+    .led-container { display: flex; justify-content: center; gap: 30px; }
+    .led-wrapper { display: flex; flex-direction: column; align-items: center; width: 120px; }
     .led { width: 60px; height: 60px; border-radius: 50%; background: #444; border: 2px solid #555; transition: 0.3s; margin-bottom: 15px; }
+    
     .led1-on { background: #00ff66; box-shadow: 0 0 25px #00ff66; border-color: #00ff66; }
     .led2-on { background: #ffaa00; box-shadow: 0 0 25px #ffaa00; border-color: #ffaa00; }
     .led3-on { background: #ff0055; box-shadow: 0 0 25px #ff0055; border-color: #ff0055; }
@@ -29,6 +40,13 @@
     .status-1 { color: #00ff66; }
     .status-2 { color: #ffaa00; }
     .status-3 { color: #ff0055; }
+
+    /* Estatísticas */
+    .stats-box { background: #1e1e2e; margin: 15px 0; padding: 15px; border-radius: 8px; font-size: 1.2em; display: flex; justify-content: space-between; align-items: center;}
+    .stats-count { font-size: 1.5em; font-weight: bold; }
+    .stats-1 { border-left: 5px solid #00ff66; }
+    .stats-2 { border-left: 5px solid #ffaa00; }
+    .stats-3 { border-left: 5px solid #ff0055; }
   </style>
 </head>
 <body>
@@ -38,51 +56,52 @@
       <span class="umc-sub">UNIVERSIDADE DE MOGI DAS CRUZES</span>
     </div>
 
-    <div class="led-container">
-      <div class="led-wrapper">
-        <div id="led1" class="led"></div>
-        <div id="lbl1" class="status status-1">Verde<br>Seguro</div>
+    <!-- Navegação das Abas -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="mudarAba('monitoramento', this)">Monitoramento</button>
+      <button class="tab-btn" onclick="mudarAba('estatisticas', this)">Estatísticas</button>
+    </div>
+
+    <!-- ABA 1: MONITORAMENTO (Padrão) -->
+    <div id="monitoramento" class="tab-content active">
+      <div class="led-container">
+        <div class="led-wrapper">
+          <div id="led1" class="led"></div>
+          <div id="lbl1" class="status status-1">Verde<br>Seguro</div>
+        </div>
+        <div class="led-wrapper">
+          <div id="led2" class="led"></div>
+          <div id="lbl2" class="status status-2">Amarelo<br>Atenção</div>
+        </div>
+        <div class="led-wrapper">
+          <div id="led3" class="led"></div>
+          <div id="lbl3" class="status status-3">Vermelho<br>Crítico</div>
+        </div>
       </div>
-      
-      <div class="led-wrapper">
-        <div id="led2" class="led"></div>
-        <div id="lbl2" class="status status-2">Amarelo<br>Atenção</div>
+    </div>
+
+    <!-- ABA 2: ESTATÍSTICAS (Oculta por padrão) -->
+    <div id="estatisticas" class="tab-content">
+      <h3>Histórico de Acionamentos</h3>
+      <div class="stats-box stats-1">
+        <span>Nível Seguro (Verde)</span>
+        <span class="stats-count" id="count1" style="color: #00ff66;">0</span>
       </div>
-      
-      <div class="led-wrapper">
-        <div id="led3" class="led"></div>
-        <div id="lbl3" class="status status-3">Vermelho<br>Crítico</div>
+      <div class="stats-box stats-2">
+        <span>Nível Atenção (Amarelo)</span>
+        <span class="stats-count" id="count2" style="color: #ffaa00;">0</span>
+      </div>
+      <div class="stats-box stats-3">
+        <span>Nível Crítico (Vermelho)</span>
+        <span class="stats-count" id="count3" style="color: #ff0055;">0</span>
       </div>
     </div>
   </div>
 
   <script>
-    // Credenciais do Firebase corrigidas e sem a barra no final da URL
-    const firebaseConfig = {
-      apiKey: "AIzaSyBkrkes5jzJD7CsaYgq3Ycg2Q2nEpz5ci8",
-      databaseURL: "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com"
-    };
-
-    // Inicializa o Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    // Lê os dados em tempo real da pasta "/painel"
-    database.ref('/painel').on('value', (snapshot) => {
-      const data = snapshot.val();
-      
-      if (data) {
-        // Atualiza a cor dos LEDs com base no banco de dados
-        document.getElementById('led1').className = 'led ' + (data.led1 ? 'led1-on' : '');
-        document.getElementById('led2').className = 'led ' + (data.led2 ? 'led2-on' : '');
-        document.getElementById('led3').className = 'led ' + (data.led3 ? 'led3-on' : '');
-        
-        // Atualiza os textos de status
-        document.getElementById('lbl1').className = 'status status-1 ' + (data.led1 ? 'show' : '');
-        document.getElementById('lbl2').className = 'status status-2 ' + (data.led2 ? 'show' : '');
-        document.getElementById('lbl3').className = 'status status-3 ' + (data.led3 ? 'show' : '');
-      }
-    });
-  </script>
-</body>
-</html>
+    // 1. Função para alternar as abas
+    function mudarAba(idAba, botaoElement) {
+      // Esconde todos os conteúdos
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      // Remove o destaque de todos os botões
+      document.querySelectorAll('.tab-btn').forEach(btn =>
