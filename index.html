@@ -74,7 +74,7 @@
       align-items: center;
       padding: 40px;
       background: #1e1e2e;
-      overflow-y: auto; /* Permite rolagem se o texto for muito longo */
+      overflow-y: auto;
     }
 
     .card {
@@ -83,7 +83,7 @@
       border-radius: 12px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
       min-width: 550px;
-      max-width: 800px; /* Limite de largura para leitura confortável */
+      max-width: 800px;
       text-align: center;
     }
 
@@ -113,17 +113,18 @@
       font-style: italic;
     }
     
-    /* Para quando você quiser adicionar a imagem real, use esta classe no <img>: */
     .project-image { max-width: 100%; border-radius: 8px; margin: 20px 0; }
 
     .implementers {
       background: #232334;
-      padding: 15px;
+      padding: 20px;
       border-radius: 8px;
       border-left: 4px solid #0055ff;
-      text-align: left;
+      text-align: justify;
       font-size: 1.05em;
       margin-top: 30px;
+      color: #e0e0e0;
+      line-height: 1.5;
     }
 
     /* ABA 2: LEDs */
@@ -156,7 +157,6 @@
   <div class="sidebar">
     <div class="sys-title">Sistema de Controle Pluviométrico</div>
     
-    <!-- Botão da nova aba marcado como active por padrão -->
     <button class="nav-btn active" onclick="mudarAba('sobre', this)">
       Sobre o Projeto
     </button>
@@ -181,8 +181,45 @@
           <span class="umc-sub">UNIVERSIDADE DE MOGI DAS CRUZES</span>
         </div>
 
-        <h2 class="sobre-title">SISTEMA DE MONITORAMENTO PLUVIOMÉTRICO UTILIZANDO IoT <br><span style="font-size: 0.7em; color: #aaa; font-weight: normal;">Aplicação de técnicas acessíveis para proteção socioambiental[cite: 1]</span></h2>
+        <h2 class="sobre-title">SISTEMA DE MONITORAMENTO PLUVIOMÉTRICO UTILIZANDO IoT <br><span style="font-size: 0.7em; color: #aaa; font-weight: normal;">Aplicação de técnicas acessíveis para proteção socioambiental</span></h2>
         
         <div class="sobre-text">
-          <p>Nas últimas décadas, observa-se um aumento significativo na ocorrência de desastres naturais associados a eventos climáticos extremos[cite: 1]. No Brasil, o número de desastres relacionados a chuvas, como enchentes e deslizamentos, apresentou um aumento de aproximadamente 222% ao longo da última década[cite: 1].</p>
-          <p>Para mitigar esses impactos, este trabalho desenvolveu um sistema inteligente de monitoramento utilizando o microcontrolador ESP32 integrado a sensores de nível[cite: 1]. A utilização da Internet das Coisas (IoT) possibilita a coleta de dados em tempo real
+          <p>O projeto propõe o desenvolvimento de uma solução tecnológica de baixo custo para auxiliar na prevenção e no monitoramento de enchentes em áreas urbanas vulneráveis. O sistema utiliza um microcontrolador ESP32 integrado a sensores de nível de água, permitindo identificar diferentes estágios de risco e fornecer informações em tempo real por meio de uma interface web, além de acionar alertas visuais e mecanismos automáticos de drenagem quando necessário.</p>
+          <p>A principal ideia do projeto é empregar conceitos de Internet das Coisas (IoT) para criar uma ferramenta acessível, capaz de monitorar continuamente a elevação do nível da água e contribuir para a redução dos impactos causados por eventos climáticos extremos. Sua aplicabilidade abrange residências, comunidades, áreas urbanas sujeitas a alagamentos, instituições públicas e projetos de cidades inteligentes, oferecendo uma alternativa viável para aumentar a segurança da população e apoiar ações preventivas diante de riscos de enchentes.</p>
+        </div>
+
+        <!-- Espaço para a imagem -->
+        <div class="image-placeholder">
+          <span>[ Insira aqui a foto ou diagrama do seu protótipo ]<br>
+          <small>Para adicionar, substitua esta div por uma tag &lt;img src="link-da-imagem.jpg" class="project-image"&gt;</small></span>
+        </div>
+
+        <!-- Equipe -->
+        <div class="implementers">
+          O projeto foi desenvolvido pelos acadêmicos <strong>Bianca Luiza de Souza Villela, José Marcos Alves Neves e Felipe Ramos Costa</strong>, do curso de Engenharia Elétrica da Universidade Mogi das Cruzes, como uma proposta inovadora que une eletrônica, automação e conectividade para promover a proteção socioambiental por meio da tecnologia.
+        </div>
+      </div>
+
+      <!-- ABA 2: MONITORAMENTO -->
+      <div id="monitoramento" class="tab-content">
+        <h2 style="margin-bottom: 30px; color: #ccc;">Status em Tempo Real</h2>
+        <div class="led-container">
+          <div class="led-wrapper">
+            <div id="led1" class="led"></div>
+            <div id="lbl1" class="status status-1">Verde<br>Seguro</div>
+          </div>
+          <div class="led-wrapper">
+            <div id="led2" class="led"></div>
+            <div id="lbl2" class="status status-2">Amarelo<br>Atenção</div>
+          </div>
+          <div class="led-wrapper">
+            <div id="led3" class="led"></div>
+            <div id="lbl3" class="status status-3">Vermelho<br>Crítico</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 3: ESTATÍSTICAS -->
+      <div id="estatisticas" class="tab-content">
+        <h2 class="stats-title">Acionamentos dos Sensores</h2>
+        <div
