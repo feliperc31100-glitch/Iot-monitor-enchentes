@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Monitoramento Pluviométrico</title>
   
-  <!-- Importando o Firebase -->
+  <!-- Importando o Firebase (Versão Compatível) -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -38,4 +38,228 @@
       color: #0055ff;
       margin-bottom: 40px;
       line-height: 1.3;
-      border-bottom: 2px solid
+      border-bottom: 2px solid #33334d;
+      padding-bottom: 20px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      color: #aaa;
+      border: none;
+      padding: 15px;
+      text-align: left;
+      font-size: 1.1em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-bottom: 10px;
+    }
+
+    .nav-btn:hover { 
+      background: #2b2b3b; 
+      color: #fff; 
+    }
+    
+    .nav-btn.active { 
+      background: #0055ff; 
+      color: #fff; 
+      font-weight: bold; 
+    }
+
+    /* CONTEÚDO PRINCIPAL */
+    .main-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      background: #1e1e2e;
+      overflow-y: auto;
+    }
+
+    .card {
+      background: #2b2b3b;
+      padding: 50px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      min-width: 550px;
+      max-width: 800px;
+      text-align: center;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+
+    @keyframes fadeIn { 
+      from { opacity: 0; transform: translateY(10px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+
+    /* ESTILOS DA ABA 1: SOBRE O PROJETO */
+    .umc-logo { font-size: 2.5em; font-weight: 900; color: #0055ff; margin-bottom: 20px; letter-spacing: 2px; }
+    .umc-sub { font-size: 0.35em; color: #ccc; display: block; margin-top: 5px; font-weight: normal; letter-spacing: 1px; }
+    
+    .sobre-title { font-size: 1.4em; margin-bottom: 20px; color: #fff; line-height: 1.4; }
+    .sobre-text { text-align: justify; font-size: 1.1em; color: #ccc; line-height: 1.6; margin-bottom: 20px; }
+    .sobre-text p { margin-bottom: 15px; }
+
+    .implementers {
+      background: #232334;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #0055ff;
+      text-align: justify;
+      font-size: 1.05em;
+      margin-top: 30px;
+      color: #e0e0e0;
+      line-height: 1.5;
+    }
+
+    /* ABA 2: LEDs */
+    .led-container { display: flex; justify-content: center; gap: 40px; margin-top: 10px; }
+    .led-wrapper { display: flex; flex-direction: column; align-items: center; width: 120px; }
+    .led { width: 70px; height: 70px; border-radius: 50%; background: #444; border: 2px solid #555; transition: 0.3s; margin-bottom: 15px; }
+    
+    .led1-on { background: #00ff66; box-shadow: 0 0 35px #00ff66; border-color: #00ff66; }
+    .led2-on { background: #ffaa00; box-shadow: 0 0 35px #ffaa00; border-color: #ffaa00; }
+    .led3-on { background: #ff0055; box-shadow: 0 0 35px #ff0055; border-color: #ff0055; }
+    
+    .status { font-size: 1.1em; font-weight: bold; opacity: 0.2; transition: 0.3s; }
+    .status.show { opacity: 1; }
+    .status-1 { color: #00ff66; }
+    .status-2 { color: #ffaa00; }
+    .status-3 { color: #ff0055; }
+
+    /* ABA 3: ESTATÍSTICAS */
+    .stats-title { font-size: 1.8em; margin-bottom: 25px; color: #fff; }
+    .stats-box { background: #1e1e2e; margin: 15px 0; padding: 20px; border-radius: 8px; font-size: 1.2em; display: flex; justify-content: space-between; align-items: center;}
+    .stats-count { font-size: 1.8em; font-weight: bold; }
+    .stats-1 { border-left: 5px solid #00ff66; }
+    .stats-2 { border-left: 5px solid #ffaa00; }
+    .stats-3 { border-left: 5px solid #ff0055; }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA LATERAL -->
+  <div class="sidebar">
+    <div class="sys-title">Sistema de Monitoramento Pluviométrico</div>
+    
+    <button class="nav-btn active" onclick="mudarAba('sobre', this)">
+      Sobre o Projeto
+    </button>
+    <button class="nav-btn" onclick="mudarAba('monitoramento', this)">
+      Monitoramento
+    </button>
+    <button class="nav-btn" onclick="mudarAba('estatisticas', this)">
+      Histórico de Alertas
+    </button>
+  </div>
+
+  <!-- ÁREA PRINCIPAL -->
+  <div class="main-content">
+    <div class="card">
+      
+      <!-- ABA 1: SOBRE O PROJETO (Padrão) -->
+      <div id="sobre" class="tab-content active">
+        
+        <!-- Logo UMC -->
+        <div class="umc-logo">
+          UMC
+          <span class="umc-sub">UNIVERSIDADE DE MOGI DAS CRUZES</span>
+        </div>
+
+        <h2 class="sobre-title">SISTEMA DE MONITORAMENTO PLUVIOMÉTRICO UTILIZANDO IoT <br><span style="font-size: 0.7em; color: #aaa; font-weight: normal;">Aplicação de técnicas acessíveis para proteção socioambiental</span></h2>
+        
+        <div class="sobre-text">
+          <p>O projeto propõe o desenvolvimento de uma solução tecnológica de baixo custo para auxiliar na prevenção e no monitoramento de enchentes em áreas urbanas vulneráveis. O sistema utiliza um microcontrolador ESP32 integrado a sensores de nível de água, permitindo identificar diferentes estágios de risco e fornecer informações em tempo real por meio de uma interface web, além de acionar alertas visuais e mecanismos automáticos de drenagem quando necessário.</p>
+          <p>A principal ideia do projeto é empregar conceitos de Internet das Coisas (IoT) para criar uma ferramenta acessível, capaz de monitorar continuamente a elevação do nível da água e contribuir para a redução dos impactos causados por eventos climáticos extremos. Sua aplicabilidade abrange residências, comunidades, áreas urbanas sujeitas a alagamentos, instituições públicas e projetos de cidades inteligentes, oferecendo uma alternativa viável para aumentar a segurança da população e apoiar ações preventivas diante de riscos de enchentes.</p>
+        </div>
+
+        <!-- Equipe -->
+        <div class="implementers">
+          O projeto foi desenvolvido pelos acadêmicos <strong>Bianca Luiza de Souza Villela, José Marcos Alves Neves e Felipe Ramos Costa</strong>, do curso de Engenharia Elétrica da Universidade Mogi das Cruzes, como uma proposta inovadora que une eletrônica, automação e conectividade para promover a proteção socioambiental por meio da tecnologia.
+        </div>
+      </div>
+
+      <!-- ABA 2: MONITORAMENTO -->
+      <div id="monitoramento" class="tab-content">
+        <h2 style="margin-bottom: 30px; color: #ccc;">Status em Tempo Real</h2>
+        <div class="led-container">
+          <div class="led-wrapper">
+            <div id="led1" class="led"></div>
+            <div id="lbl1" class="status status-1">Verde<br>Seguro</div>
+          </div>
+          <div class="led-wrapper">
+            <div id="led2" class="led"></div>
+            <div id="lbl2" class="status status-2">Amarelo<br>Atenção</div>
+          </div>
+          <div class="led-wrapper">
+            <div id="led3" class="led"></div>
+            <div id="lbl3" class="status status-3">Vermelho<br>Crítico</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 3: ESTATÍSTICAS -->
+      <div id="estatisticas" class="tab-content">
+        <h2 class="stats-title">Acionamentos dos Sensores</h2>
+        <div class="stats-box stats-1">
+          <span>Nível Seguro (Verde)</span>
+          <span class="stats-count" id="count1" style="color: #00ff66;">0</span>
+        </div>
+        <div class="stats-box stats-2">
+          <span>Nível Atenção (Amarelo)</span>
+          <span class="stats-count" id="count2" style="color: #ffaa00;">0</span>
+        </div>
+        <div class="stats-box stats-3">
+          <span>Nível Crítico (Vermelho)</span>
+          <span class="stats-count" id="count3" style="color: #ff0055;">0</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function mudarAba(idAba, botaoElement) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      
+      document.getElementById(idAba).classList.add('active');
+      botaoElement.classList.add('active');
+    }
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBkrkes5jzJD7CsaYgq3Ycg2Q2nEpz5ci8",
+      databaseURL: "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com"
+    };
+    
+    // Inicializa o Firebase com proteção contra múltiplas chamadas
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const database = firebase.database();
+
+    // Lê os dados dos LEDs em tempo real com segurança
+    database.ref('/painel').on('value', (snapshot) => {
+      const data = snapshot.val() || {};
+      document.getElementById('led1').className = 'led ' + (data.led1 ? 'led1-on' : '');
+      document.getElementById('led2').className = 'led ' + (data.led2 ? 'led2-on' : '');
+      document.getElementById('led3').className = 'led ' + (data.led3 ? 'led3-on' : '');
+      
+      document.getElementById('lbl1').className = 'status status-1 ' + (data.led1 ? 'show' : '');
+      document.getElementById('lbl2').className = 'status status-2 ' + (data.led2 ? 'show' : '');
+      document.getElementById('lbl3').className = 'status status-3 ' + (data.led3 ? 'show' : '');
+    });
+
+    // Lê os dados dos contadores em tempo real com segurança
+    database.ref('/contadores').on('value', (snapshot) => {
+      const contadores = snapshot.val() || {};
+      document.getElementById('count1').innerText = contadores.led1 || 0;
+      document.getElementById('count2').innerText = contadores.led2 || 0;
+      document.getElementById('count3').innerText = contadores.led3 || 0;
+    });
+  </script>
+</body>
+</html>
