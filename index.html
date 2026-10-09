@@ -74,6 +74,7 @@
       align-items: center;
       padding: 40px;
       background: #1e1e2e;
+      overflow-y: auto; /* Permite rolagem se o texto for muito longo */
     }
 
     .card {
@@ -82,6 +83,7 @@
       border-radius: 12px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
       min-width: 550px;
+      max-width: 800px; /* Limite de largura para leitura confortável */
       text-align: center;
     }
 
@@ -93,7 +95,38 @@
       to { opacity: 1; transform: translateY(0); } 
     }
 
-    /* ABA 1: LEDs */
+    /* ESTILOS DA ABA 1: SOBRE O PROJETO */
+    .umc-logo { font-size: 2.5em; font-weight: 900; color: #0055ff; margin-bottom: 20px; letter-spacing: 2px; }
+    .umc-sub { font-size: 0.35em; color: #ccc; display: block; margin-top: 5px; font-weight: normal; letter-spacing: 1px; }
+    
+    .sobre-title { font-size: 1.4em; margin-bottom: 20px; color: #fff; line-height: 1.4; }
+    .sobre-text { text-align: justify; font-size: 1.1em; color: #ccc; line-height: 1.6; margin-bottom: 20px; }
+    .sobre-text p { margin-bottom: 15px; }
+    
+    .image-placeholder {
+      background: #1e1e2e;
+      border: 2px dashed #444;
+      border-radius: 8px;
+      padding: 40px 20px;
+      margin: 20px 0;
+      color: #777;
+      font-style: italic;
+    }
+    
+    /* Para quando você quiser adicionar a imagem real, use esta classe no <img>: */
+    .project-image { max-width: 100%; border-radius: 8px; margin: 20px 0; }
+
+    .implementers {
+      background: #232334;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #0055ff;
+      text-align: left;
+      font-size: 1.05em;
+      margin-top: 30px;
+    }
+
+    /* ABA 2: LEDs */
     .led-container { display: flex; justify-content: center; gap: 40px; margin-top: 10px; }
     .led-wrapper { display: flex; flex-direction: column; align-items: center; width: 120px; }
     .led { width: 70px; height: 70px; border-radius: 50%; background: #444; border: 2px solid #555; transition: 0.3s; margin-bottom: 15px; }
@@ -108,7 +141,7 @@
     .status-2 { color: #ffaa00; }
     .status-3 { color: #ff0055; }
 
-    /* ABA 2: ESTATÍSTICAS */
+    /* ABA 3: ESTATÍSTICAS */
     .stats-title { font-size: 1.8em; margin-bottom: 25px; color: #fff; }
     .stats-box { background: #1e1e2e; margin: 15px 0; padding: 20px; border-radius: 8px; font-size: 1.2em; display: flex; justify-content: space-between; align-items: center;}
     .stats-count { font-size: 1.8em; font-weight: bold; }
@@ -123,7 +156,11 @@
   <div class="sidebar">
     <div class="sys-title">Sistema de Controle Pluviométrico</div>
     
-    <button class="nav-btn active" onclick="mudarAba('monitoramento', this)">
+    <!-- Botão da nova aba marcado como active por padrão -->
+    <button class="nav-btn active" onclick="mudarAba('sobre', this)">
+      Sobre o Projeto
+    </button>
+    <button class="nav-btn" onclick="mudarAba('monitoramento', this)">
       Monitoramento
     </button>
     <button class="nav-btn" onclick="mudarAba('estatisticas', this)">
@@ -135,86 +172,17 @@
   <div class="main-content">
     <div class="card">
       
-      <!-- ABA 1: MONITORAMENTO (Padrão) -->
-      <div id="monitoramento" class="tab-content active">
-        <h2 style="margin-bottom: 30px; color: #ccc;">Status em Tempo Real</h2>
-        <div class="led-container">
-          <div class="led-wrapper">
-            <div id="led1" class="led"></div>
-            <div id="lbl1" class="status status-1">Verde<br>Seguro</div>
-          </div>
-          <div class="led-wrapper">
-            <div id="led2" class="led"></div>
-            <div id="lbl2" class="status status-2">Amarelo<br>Atenção</div>
-          </div>
-          <div class="led-wrapper">
-            <div id="led3" class="led"></div>
-            <div id="lbl3" class="status status-3">Vermelho<br>Crítico</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ABA 2: ESTATÍSTICAS (Oculta por padrão) -->
-      <div id="estatisticas" class="tab-content">
-        <h2 class="stats-title">Acionamentos dos Sensores</h2>
-        <div class="stats-box stats-1">
-          <span>Nível Seguro (Verde)</span>
-          <span class="stats-count" id="count1" style="color: #00ff66;">0</span>
-        </div>
-        <div class="stats-box stats-2">
-          <span>Nível Atenção (Amarelo)</span>
-          <span class="stats-count" id="count2" style="color: #ffaa00;">0</span>
-        </div>
-        <div class="stats-box stats-3">
-          <span>Nível Crítico (Vermelho)</span>
-          <span class="stats-count" id="count3" style="color: #ff0055;">0</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <script>
-    // 1. Função para alternar as abas na interface
-    function mudarAba(idAba, botaoElement) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      
-      document.getElementById(idAba).classList.add('active');
-      botaoElement.classList.add('active');
-    }
-
-    // 2. Configuração do Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyBkrkes5jzJD7CsaYgq3Ycg2Q2nEpz5ci8",
-      databaseURL: "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    // 3. Lê os dados dos LEDs em tempo real
-    database.ref('/painel').on('value', (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        document.getElementById('led1').className = 'led ' + (data.led1 ? 'led1-on' : '');
-        document.getElementById('led2').className = 'led ' + (data.led2 ? 'led2-on' : '');
-        document.getElementById('led3').className = 'led ' + (data.led3 ? 'led3-on' : '');
+      <!-- ABA 1: SOBRE O PROJETO (Padrão) -->
+      <div id="sobre" class="tab-content active">
         
-        document.getElementById('lbl1').className = 'status status-1 ' + (data.led1 ? 'show' : '');
-        document.getElementById('lbl2').className = 'status status-2 ' + (data.led2 ? 'show' : '');
-        document.getElementById('lbl3').className = 'status status-3 ' + (data.led3 ? 'show' : '');
-      }
-    });
+        <!-- Logo UMC -->
+        <div class="umc-logo">
+          UMC
+          <span class="umc-sub">UNIVERSIDADE DE MOGI DAS CRUZES</span>
+        </div>
 
-    // 4. Lê os dados dos contadores em tempo real
-    database.ref('/contadores').on('value', (snapshot) => {
-      const contadores = snapshot.val();
-      if (contadores) {
-        document.getElementById('count1').innerText = contadores.led1 || 0;
-        document.getElementById('count2').innerText = contadores.led2 || 0;
-        document.getElementById('count3').innerText = contadores.led3 || 0;
-      }
-    });
-  </script>
-</body>
-</html>
+        <h2 class="sobre-title">SISTEMA DE MONITORAMENTO PLUVIOMÉTRICO UTILIZANDO IoT <br><span style="font-size: 0.7em; color: #aaa; font-weight: normal;">Aplicação de técnicas acessíveis para proteção socioambiental[cite: 1]</span></h2>
+        
+        <div class="sobre-text">
+          <p>Nas últimas décadas, observa-se um aumento significativo na ocorrência de desastres naturais associados a eventos climáticos extremos[cite: 1]. No Brasil, o número de desastres relacionados a chuvas, como enchentes e deslizamentos, apresentou um aumento de aproximadamente 222% ao longo da última década[cite: 1].</p>
+          <p>Para mitigar esses impactos, este trabalho desenvolveu um sistema inteligente de monitoramento utilizando o microcontrolador ESP32 integrado a sensores de nível[cite: 1]. A utilização da Internet das Coisas (IoT) possibilita a coleta de dados em tempo real
