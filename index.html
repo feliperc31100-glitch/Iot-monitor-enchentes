@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
@@ -22,12 +22,13 @@
 
         /* Menu Lateral */
         .sidebar {
-            width: 250px;
+            width: 260px;
             background-color: #181b28;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 25px 20px;
             border-right: 1px solid #222638;
+            flex-shrink: 0;
         }
 
         .sidebar h1 {
@@ -35,27 +36,32 @@
             font-size: 20px;
             margin-bottom: 40px;
             line-height: 1.4;
+            font-weight: 700;
         }
 
-        .sidebar a {
+        .sidebar button {
+            background: none;
+            border: none;
             color: #a0a6b8;
-            text-decoration: none;
-            padding: 12px 15px;
-            margin-bottom: 10px;
+            text-align: left;
+            padding: 14px 16px;
+            margin-bottom: 8px;
             border-radius: 8px;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             font-size: 15px;
+            cursor: pointer;
+            width: 100%;
         }
 
-        .sidebar a:hover {
+        .sidebar button:hover {
             background-color: #222638;
             color: #ffffff;
         }
 
-        .sidebar a.active {
+        .sidebar button.active {
             background-color: #0056ff;
             color: #ffffff;
-            font-weight: bold;
+            font-weight: 600;
         }
 
         /* Conteúdo Principal */
@@ -65,54 +71,106 @@
             justify-content: center;
             align-items: center;
             padding: 40px;
+            overflow-y: auto;
         }
 
-        /* Card de Contadores */
+        /* Secções/Abas */
+        .tab-content {
+            display: none;
+            width: 100%;
+            max-width: 700px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards e Estilização */
         .card {
             background-color: #1b1f2e;
             padding: 30px;
             border-radius: 12px;
-            width: 450px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid #282c3f;
         }
 
         .card h2 {
-            font-size: 20px;
-            margin-bottom: 25px;
-            text-align: center;
+            font-size: 22px;
+            margin-bottom: 20px;
             color: #ffffff;
+            border-bottom: 2px solid #0056ff;
+            padding-bottom: 10px;
         }
 
+        .card p {
+            color: #c0c6d8;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        /* Indicadores em Tempo Real na Aba Monitoramento */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .status-box {
+            background-color: #12141d;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #282c3f;
+        }
+
+        .status-box span {
+            display: block;
+            font-size: 14px;
+            color: #a0a6b8;
+            margin-bottom: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            background-color: #222638;
+            color: #777;
+        }
+
+        .status-badge.online {
+            background-color: rgba(0, 200, 83, 0.2);
+            color: #00C853;
+        }
+
+        /* Lista de Contadores na Aba Histórico de Alertas */
         .nivel-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 16px 20px;
             margin-bottom: 15px;
             border-radius: 8px;
             background-color: #12141d;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 15px;
         }
 
-        /* Cores das Bordas Laterais dos Níveis */
-        .nivel-verde {
-            border-left: 5px solid #00C853;
-        }
+        .nivel-verde { border-left: 5px solid #00C853; }
+        .nivel-amarelo { border-left: 5px solid #FFD600; }
+        .nivel-vermelho { border-left: 5px solid #D50000; }
 
-        .nivel-amarelo {
-            border-left: 5px solid #FFD600;
-        }
-
-        .nivel-vermelho {
-            border-left: 5px solid #D50000;
-        }
-
-        /* Estilo dos Números */
-        .contador-num {
-            font-size: 22px;
-        }
-
+        .contador-num { font-size: 24px; font-weight: bold; }
         .nivel-verde .contador-num { color: #00C853; }
         .nivel-amarelo .contador-num { color: #FFD600; }
         .nivel-vermelho .contador-num { color: #D50000; }
@@ -123,58 +181,122 @@
     <!-- Menu Lateral -->
     <div class="sidebar">
         <h1>Sistema de<br>Monitoramento<br>Pluviométrico</h1>
-        <a href="#">Sobre o Projeto</a>
-        <a href="#">Monitoramento</a>
-        <a href="#" class="active">Histórico de Alertas</a>
+        <button onclick="openTab('sobre')" id="btn-sobre">Sobre o Projeto</button>
+        <button onclick="openTab('monitoramento')" id="btn-monitoramento">Monitoramento</button>
+        <button onclick="openTab('historico')" id="btn-historico" class="active">Histórico de Alertas</button>
     </div>
 
     <!-- Conteúdo Principal -->
     <div class="main-content">
-        <div class="card">
-            <h2>Acionamentos dos Sensores</h2>
 
-            <div class="nivel-item nivel-verde">
-                <span>Nível Seguro (Verde)</span>
-                <span id="contador-verde" class="contador-num">0</span>
-            </div>
-
-            <div class="nivel-item nivel-amarelo">
-                <span>Nível Atenção (Amarelo)</span>
-                <span id="contador-amarelo" class="contador-num">0</span>
-            </div>
-
-            <div class="nivel-item nivel-vermelho">
-                <span>Nível Crítico (Vermelho)</span>
-                <span id="contador-vermelho" class="contador-num">0</span>
+        <!-- ABA 1: Sobre o Projeto -->
+        <div id="tab-sobre" class="tab-content">
+            <div class="card">
+                <h2>Sobre o Projeto</h2>
+                <p>O <strong>Sistema de Monitoramento Pluviométrico</strong> foi desenvolvido para detecção precoce de riscos de alagamento e enchentes em áreas urbanas.</p>
+                <p>Utilizando um microcontrolador ESP32 integrado a sensores de nível d'água, o sistema realiza a leitura contínua dos níveis e envia notificações automáticas em tempo real para o Telegram e para esta plataforma web via Firebase Realtime Database.</p>
             </div>
         </div>
+
+        <!-- ABA 2: Monitoramento em Tempo Real -->
+        <div id="tab-monitoramento" class="tab-content">
+            <div class="card">
+                <h2>Monitoramento Atual</h2>
+                <p>Estado atual dos sensores de nível em tempo real:</p>
+                <div class="status-grid">
+                    <div class="status-box">
+                        <span>Nível Baixo</span>
+                        <div id="status-led1" class="status-badge">Desativado</div>
+                    </div>
+                    <div class="status-box">
+                        <span>Nível Médio</span>
+                        <div id="status-led2" class="status-badge">Desativado</div>
+                    </div>
+                    <div class="status-box">
+                        <span>Nível Alto</span>
+                        <div id="status-led3" class="status-badge">Desativado</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 3: Histórico de Alertas (Contadores) -->
+        <div id="tab-historico" class="tab-content active">
+            <div class="card">
+                <h2 style="border: none; margin-bottom: 25px; text-align: center;">Acionamentos dos Sensores</h2>
+
+                <div class="nivel-item nivel-verde">
+                    <span>Nível Seguro (Verde)</span>
+                    <span id="contador-verde" class="contador-num">0</span>
+                </div>
+
+                <div class="nivel-item nivel-amarelo">
+                    <span>Nível Atenção (Amarelo)</span>
+                    <span id="contador-amarelo" class="contador-num">0</span>
+                </div>
+
+                <div class="nivel-item nivel-vermelho">
+                    <span>Nível Crítico (Vermelho)</span>
+                    <span id="contador-vermelho" class="contador-num">0</span>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Script de Integração com o Firebase Realtime Database -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    <script>
+        // Lógica de alternância entre as abas do menu
+        function openTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
 
-        // Configuração do seu projeto Firebase (a mesma URL do ESP32)
-        const firebaseConfig = {
-            databaseURL: "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com/"
-        };
+            const buttons = document.querySelectorAll('.sidebar button');
+            buttons.forEach(btn => btn.classList.remove('active'));
 
-        // Inicializa o Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+            document.getElementById('tab-' + tabName).classList.add('active');
+            document.getElementById('btn-' + tabName).classList.add('active');
+        }
 
-        // Ouve as alterações na pasta 'contadores' em tempo real
-        const contadoresRef = ref(db, 'contadores/');
-        onValue(contadoresRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                // Atualiza os elementos HTML com os valores recebidos do ESP32
-                document.getElementById('contador-verde').innerText = data.verde || 0;
-                document.getElementById('contador-amarelo').innerText = data.amarelo || 0;
-                document.getElementById('contador-vermelho').innerText = data.vermelho || 0;
+        // Requisição para o Firebase Realtime Database
+        const urlFirebase = "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com/.json";
+
+        function atualizarDados() {
+            fetch(urlFirebase)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        // Atualiza os Contadores na aba Histórico
+                        if (data.contadores) {
+                            document.getElementById('contador-verde').innerText = data.contadores.verde || 0;
+                            document.getElementById('contador-amarelo').innerText = data.contadores.amarelo || 0;
+                            document.getElementById('contador-vermelho').innerText = data.contadores.vermelho || 0;
+                        }
+
+                        // Atualiza o Status Atual na aba Monitoramento
+                        if (data.painel) {
+                            atualizarStatusBadge('status-led1', data.painel.led1);
+                            atualizarStatusBadge('status-led2', data.painel.led2);
+                            atualizarStatusBadge('status-led3', data.painel.led3);
+                        }
+                    }
+                })
+                .catch(error => console.error("Erro na leitura do Firebase:", error));
+        }
+
+        function atualizarStatusBadge(id, estado) {
+            const el = document.getElementById(id);
+            if (estado) {
+                el.innerText = "Ativo";
+                el.classList.add("online");
+            } else {
+                el.innerText = "Desativado";
+                el.classList.remove("online");
             }
-        });
+        }
+
+        // Executa a busca ao carregar e atualiza a cada 2 segundos
+        atualizarDados();
+        setInterval(atualizarDados, 2000);
     </script>
 
 </body>
