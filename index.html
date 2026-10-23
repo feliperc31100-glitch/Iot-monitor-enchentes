@@ -116,7 +116,7 @@
             text-align: justify;
         }
 
-        /* Estilo da Logo da UMC na aba Sobre */
+        /* Logo UMC */
         .logo-container {
             text-align: center;
             margin-bottom: 20px;
@@ -127,64 +127,81 @@
             object-fit: contain;
         }
 
-        /* Grid de Botões Coloridos na Aba Monitoramento */
-        .monitor-grid {
+        /* -------------------------------------------------------------
+           ESTILO DOS LEDS DE MONITORAMENTO EM TEMPO REAL (Igual à imagem)
+           ------------------------------------------------------------- */
+        .status-card {
+            background-color: #1b1f2e;
+            padding: 40px 30px;
+            border-radius: 12px;
+            width: 480px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            margin: 0 auto;
+        }
+
+        .status-card h2 {
+            border: none;
+            font-size: 22px;
+            margin-bottom: 35px;
+            color: #ffffff;
+        }
+
+        .leds-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+        }
+
+        .led-item {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .monitor-btn {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 18px 22px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            background-color: #12141d;
-            border: 2px solid #282c3f;
-            color: #777777;
-            transition: all 0.3s ease;
+            width: 110px;
         }
 
-        /* Cores Ativas dos Botões de Monitoramento */
-        .monitor-btn.verde.ativo {
-            background-color: rgba(0, 200, 83, 0.15);
-            border-color: #00C853;
-            color: #00C853;
-            box-shadow: 0 0 15px rgba(0, 200, 83, 0.3);
+        .circle-led {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background-color: #2b3042; /* Apagado */
+            margin-bottom: 15px;
+            transition: all 0.4s ease;
         }
 
-        .monitor-btn.amarelo.ativo {
-            background-color: rgba(255, 214, 0, 0.15);
-            border-color: #FFD600;
-            color: #FFD600;
-            box-shadow: 0 0 15px rgba(255, 214, 0, 0.3);
+        /* Estado ATIVO dos LEDs com brilho luminoso (Glow) */
+        .circle-led.verde.ativo {
+            background-color: #00C853;
+            box-shadow: 0 0 25px #00C853, 0 0 45px rgba(0, 200, 83, 0.6);
         }
 
-        .monitor-btn.vermelho.ativo {
-            background-color: rgba(213, 0, 0, 0.15);
-            border-color: #D50000;
-            color: #D50000;
-            box-shadow: 0 0 15px rgba(213, 0, 0, 0.3);
+        .circle-led.amarelo.ativo {
+            background-color: #FFD600;
+            box-shadow: 0 0 25px #FFD600, 0 0 45px rgba(255, 214, 0, 0.6);
         }
 
-        .status-indicator {
-            font-size: 13px;
-            padding: 5px 12px;
-            border-radius: 15px;
-            background-color: #222638;
-            color: #888;
+        .circle-led.vermelho.ativo {
+            background-color: #D50000;
+            box-shadow: 0 0 25px #D50000, 0 0 45px rgba(213, 0, 0, 0.6);
         }
 
-        .monitor-btn.ativo .status-indicator {
-            background-color: currentColor;
-            color: #12141d;
+        .led-label {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+            color: #6a7185;
+            transition: color 0.3s ease;
         }
 
-        /* Lista de Contadores na Aba Histórico de Alertas */
+        /* Texto ganha a cor respectiva quando o LED está aceso */
+        .led-item.ativo .led-label.verde-text { color: #00C853; }
+        .led-item.ativo .led-label.amarelo-text { color: #FFD600; }
+        .led-item.ativo .led-label.vermelho-text { color: #D50000; }
+
+
+        /* -------------------------------------------------------------
+           ESTILO DOS CONTADORES DA ABA HISTÓRICO DE ALERTAS
+           ------------------------------------------------------------- */
         .nivel-item {
             display: flex;
             justify-content: space-between;
@@ -213,8 +230,8 @@
     <div class="sidebar">
         <h1>Sistema de<br>Monitoramento<br>Pluviométrico</h1>
         <button onclick="openTab('sobre')" id="btn-sobre">Sobre o Projeto</button>
-        <button onclick="openTab('monitoramento')" id="btn-monitoramento">Monitoramento</button>
-        <button onclick="openTab('historico')" id="btn-historico" class="active">Histórico de Alertas</button>
+        <button onclick="openTab('monitoramento')" id="btn-monitoramento" class="active">Monitoramento</button>
+        <button onclick="openTab('historico')" id="btn-historico">Histórico de Alertas</button>
     </div>
 
     <!-- Conteúdo Principal -->
@@ -224,44 +241,45 @@
         <div id="tab-sobre" class="tab-content">
             <div class="card">
                 <div class="logo-container">
-                    <!-- Insira o arquivo da logo como 'logo-umc.png' na raiz do repositório ou ajuste o caminho -->
                     <img src="logo-umc.png" alt="Logo UMC" onerror="this.style.display='none'">
                 </div>
                 <h2>Sobre o Projeto</h2>
-                <p>O Sistema de Monitoramento Pluviométrico Utilizando IoT é um projeto acadêmico desenvolvido com o objetivo de criar uma solução tecnológica acessível para o monitoramento de níveis de água em áreas suscetíveis a enchentes e alagamentos. A proposta surgiu a partir da crescente necessidade de ferramentas capazes de auxiliar na prevenção de desastres naturais, fornecendo informações em tempo real e contribuindo para a tomada de decisões em situações de risco.</p>
+                <p>O Sistema de Monitoramento Pluviométrico Utilizando IoT é um projeto acadêmico desenvolvido com o objetivo de criar uma solução tecnológica acessível para o monitoramento de níveis de água em áreas suscetíveis a enchentes e alagamentos. A proposta surgiu a partir da crescente necessidade de ferramentas capables de auxiliar na prevenção de desastres naturais, fornecendo informações em tempo real e contribuindo para a tomada de decisões em situações de risco.</p>
                 <p>O sistema utiliza o microcontrolador ESP32, sensores de nível de água, sinalização visual por LEDs e uma plataforma web integrada para acompanhar continuamente as condições monitoradas. Conforme o nível da água aumenta, o sistema identifica diferentes estágios de risco, atualiza automaticamente as informações na interface online e pode emitir alertas remotos por meio do Telegram. Em situações críticas, também é possível acionar um sistema de bombeamento para auxiliar na drenagem da água acumulada.</p>
                 <p>Além do monitoramento em tempo real, o projeto foi concebido para permitir futuras expansões, incluindo integração com serviços meteorológicos, geolocalização, armazenamento em nuvem e recursos voltados ao conceito de cidades inteligentes. Seu desenvolvimento demonstra como tecnologias de baixo custo baseadas em Internet das Coisas (IoT) podem ser aplicadas para promover maior segurança, prevenção de riscos e proteção socioambiental.</p>
                 <p>Este projeto foi desenvolvido por Bianca Luiza de Souza Villela, Felipe Ramos Costa e José Marcos Alves Neves, alunos do curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC), como Trabalho de Conclusão de Curso (TCC).</p>
             </div>
         </div>
 
-        <!-- ABA 2: Monitoramento em Tempo Real -->
-        <div id="tab-monitoramento" class="tab-content">
-            <div class="card">
-                <h2>Monitoramento Atual</h2>
-                <p>Acompanhamento instantâneo dos níveis detectados pelos sensores:</p>
+        <!-- ABA 2: Monitoramento em Tempo Real (Igual à imagem) -->
+        <div id="tab-monitoramento" class="tab-content active">
+            <div class="status-card">
+                <h2>Status em Tempo Real</h2>
                 
-                <div class="monitor-grid">
-                    <div id="btn-nivel-verde" class="monitor-btn verde">
-                        <span>Nível Seguro (Verde)</span>
-                        <span class="status-indicator">Inativo</span>
+                <div class="leds-container">
+                    <!-- LED Verde -->
+                    <div id="item-verde" class="led-item">
+                        <div id="led-verde" class="circle-led verde"></div>
+                        <span class="led-label verde-text">Verde<br>Seguro</span>
                     </div>
 
-                    <div id="btn-nivel-amarelo" class="monitor-btn amarelo">
-                        <span>Nível Atenção (Amarelo)</span>
-                        <span class="status-indicator">Inativo</span>
+                    <!-- LED Amarelo -->
+                    <div id="item-amarelo" class="led-item">
+                        <div id="led-amarelo" class="circle-led amarelo"></div>
+                        <span class="led-label amarelo-text">Amarelo<br>Atenção</span>
                     </div>
 
-                    <div id="btn-nivel-vermelho" class="monitor-btn vermelho">
-                        <span>Nível Crítico (Vermelho)</span>
-                        <span class="status-indicator">Inativo</span>
+                    <!-- LED Vermelho -->
+                    <div id="item-vermelho" class="led-item">
+                        <div id="led-vermelho" class="circle-led vermelho"></div>
+                        <span class="led-label vermelho-text">Vermelho<br>Crítico</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- ABA 3: Histórico de Alertas (Contadores) -->
-        <div id="tab-historico" class="tab-content active">
+        <div id="tab-historico" class="tab-content">
             <div class="card">
                 <h2 style="border: none; margin-bottom: 25px; text-align: center;">Acionamentos dos Sensores</h2>
 
@@ -284,7 +302,7 @@
 
     </div>
 
-    <!-- Script de Integração -->
+    <!-- Script de Integração com Firebase -->
     <script>
         function openTab(tabName) {
             const tabs = document.querySelectorAll('.tab-content');
@@ -304,38 +322,38 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        // Atualiza os contadores na aba de Histórico
+                        // 1. Atualiza os LEDs da aba Monitoramento
+                        if (data.painel) {
+                            setLedState('led-verde', 'item-verde', data.painel.led1);
+                            setLedState('led-amarelo', 'item-amarelo', data.painel.led2);
+                            setLedState('led-vermelho', 'item-vermelho', data.painel.led3);
+                        }
+
+                        // 2. Atualiza os contadores da aba Histórico
                         if (data.contadores) {
                             document.getElementById('contador-verde').innerText = data.contadores.verde || 0;
                             document.getElementById('contador-amarelo').innerText = data.contadores.amarelo || 0;
                             document.getElementById('contador-vermelho').innerText = data.contadores.vermelho || 0;
-                        }
-
-                        // Atualiza os botões coloridos na aba de Monitoramento
-                        if (data.painel) {
-                            atualizarBotaoMonitor('btn-nivel-verde', data.painel.led1);
-                            atualizarBotaoMonitor('btn-nivel-amarelo', data.painel.led2);
-                            atualizarBotaoMonitor('btn-nivel-vermelho', data.painel.led3);
                         }
                     }
                 })
                 .catch(error => console.error("Erro na leitura do Firebase:", error));
         }
 
-        function atualizarBotaoMonitor(elementId, estado) {
-            const el = document.getElementById(elementId);
-            const indicator = el.querySelector('.status-indicator');
-            
+        function setLedState(ledId, itemId, estado) {
+            const led = document.getElementById(ledId);
+            const item = document.getElementById(itemId);
+
             if (estado) {
-                el.classList.add('ativo');
-                indicator.innerText = "ATIVO";
+                led.classList.add('ativo');
+                item.classList.add('ativo');
             } else {
-                el.classList.remove('ativo');
-                indicator.innerText = "Inativo";
+                led.classList.remove('ativo');
+                item.classList.remove('ativo');
             }
         }
 
-        // Executa ao carregar e atualiza a cada 2 segundos em segundo plano
+        // Atualização em segundo plano sem travar
         atualizarDados();
         setInterval(atualizarDados, 2000);
     </script>
