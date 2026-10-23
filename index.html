@@ -78,7 +78,7 @@
         .tab-content {
             display: none;
             width: 100%;
-            max-width: 750px;
+            max-width: 800px;
             animation: fadeIn 0.3s ease-in-out;
         }
 
@@ -127,9 +127,7 @@
             object-fit: contain;
         }
 
-        /* -------------------------------------------------------------
-           ESTILO DOS LEDS DE MONITORAMENTO EM TEMPO REAL
-           ------------------------------------------------------------- */
+        /* Status LEDs */
         .status-card {
             background-color: #1b1f2e;
             padding: 40px 30px;
@@ -196,9 +194,7 @@
         .led-item.ativo .led-label.amarelo-text { color: #FFD600; }
         .led-item.ativo .led-label.vermelho-text { color: #D50000; }
 
-        /* -------------------------------------------------------------
-           ESTILO DOS CONTADORES E BOTÃO DE RESET
-           ------------------------------------------------------------- */
+        /* Contadores e Botão */
         .nivel-item {
             display: flex;
             justify-content: space-between;
@@ -244,8 +240,41 @@
             transform: translateY(-2px);
         }
 
-        .btn-reset:active {
-            transform: translateY(0);
+        /* Tabela do Histórico Geral */
+        .table-container {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid #282c3f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            background-color: #12141d;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #181b28;
+            color: #0088ff;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tr:not(:last-child) td {
+            border-bottom: 1px solid #222638;
+        }
+
+        td {
+            color: #c0c6d8;
         }
     </style>
 </head>
@@ -257,6 +286,7 @@
         <button onclick="openTab('sobre')" id="btn-sobre">Sobre o Projeto</button>
         <button onclick="openTab('monitoramento')" id="btn-monitoramento">Monitoramento</button>
         <button onclick="openTab('historico')" id="btn-historico" class="active">Histórico de Alertas</button>
+        <button onclick="openTab('geral')" id="btn-geral">Histórico Geral</button>
     </div>
 
     <!-- Conteúdo Principal -->
@@ -282,19 +312,16 @@
                 <h2>Status em Tempo Real</h2>
                 
                 <div class="leds-container">
-                    <!-- LED Verde -->
                     <div id="item-verde" class="led-item">
                         <div id="led-verde" class="circle-led verde"></div>
                         <span class="led-label verde-text">Verde<br>Seguro</span>
                     </div>
 
-                    <!-- LED Amarelo -->
                     <div id="item-amarelo" class="led-item">
                         <div id="led-amarelo" class="circle-led amarelo"></div>
                         <span class="led-label amarelo-text">Amarelo<br>Atenção</span>
                     </div>
 
-                    <!-- LED Vermelho -->
                     <div id="item-vermelho" class="led-item">
                         <div id="led-vermelho" class="circle-led vermelho"></div>
                         <span class="led-label vermelho-text">Vermelho<br>Crítico</span>
@@ -303,7 +330,7 @@
             </div>
         </div>
 
-        <!-- ABA 3: Histórico de Alertas (Contadores) -->
+        <!-- ABA 3: Histórico de Alertas (Contadores com Reset) -->
         <div id="tab-historico" class="tab-content active">
             <div class="card">
                 <h2 style="border: none; margin-bottom: 25px; text-align: center;">Acionamentos dos Sensores</h2>
@@ -325,6 +352,30 @@
 
                 <div class="reset-btn-container">
                     <button class="btn-reset" onclick="zerarContadores()">Zerar Histórico</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 4: Histórico Geral (Permanente) -->
+        <div id="tab-geral" class="tab-content">
+            <div class="card">
+                <h2>Histórico Geral de Acionamentos</h2>
+                <p>Banco de dados contínuo com todos os registros de acionamentos armazenados na nuvem:</p>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data e Horário</th>
+                                <th>Nível Identificado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-historico-geral">
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: #6a7185;">Carregando registros...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -358,11 +409,31 @@
                             setLedState('led-vermelho', 'item-vermelho', data.painel.led3);
                         }
 
-                        // 2. Atualiza os contadores da aba Histórico
+                        // 2. Atualiza os contadores da aba Histórico de Alertas
                         if (data.contadores) {
                             document.getElementById('contador-verde').innerText = data.contadores.verde || 0;
                             document.getElementById('contador-amarelo').innerText = data.contadores.amarelo || 0;
                             document.getElementById('contador-vermelho').innerText = data.contadores.vermelho || 0;
+                        }
+
+                        // 3. Preenche a tabela do Histórico Geral (Permanente)
+                        if (data.historico_geral) {
+                            const tbody = document.getElementById('tabela-historico-geral');
+                            tbody.innerHTML = "";
+                            
+                            // Ordena os registros do mais recente para o mais antigo com base na chave (timestamp)
+                            const chaves = Object.keys(data.historico_geral).sort((a, b) => b - a);
+
+                            chaves.forEach(key => {
+                                const item = data.historico_geral[key];
+                                const tr = document.createElement('tr');
+                                
+                                tr.innerHTML = `
+                                    <td>${item.data_hora || '---'}</td>
+                                    <td><strong>${item.nivel || '---'}</strong></td>
+                                `;
+                                tbody.appendChild(tr);
+                            });
                         }
                     }
                 })
@@ -382,9 +453,9 @@
             }
         }
 
-        // Função para zerar os contadores no Firebase e resetar localmente
+        // Função para zerar apenas os contadores visuais, sem mexer no Histórico Geral
         function zerarContadores() {
-            if (confirm("Tem certeza que deseja zerar a contagem dos acionamentos?")) {
+            if (confirm("Tem certeza que deseja zerar a contagem desta tela? O histórico geral continuará salvo.")) {
                 const novosContadores = {
                     verde: 0,
                     amarelo: 0,
@@ -406,7 +477,7 @@
             }
         }
 
-        // Atualização em segundo plano
+        // Atualização contínua em segundo plano
         atualizarDados();
         setInterval(atualizarDados, 2000);
     </script>
