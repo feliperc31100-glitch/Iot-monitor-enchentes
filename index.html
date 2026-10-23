@@ -78,7 +78,7 @@
         .tab-content {
             display: none;
             width: 100%;
-            max-width: 700px;
+            max-width: 750px;
             animation: fadeIn 0.3s ease-in-out;
         }
 
@@ -94,7 +94,7 @@
         /* Cards e Estilização */
         .card {
             background-color: #1b1f2e;
-            padding: 30px;
+            padding: 35px;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             border: 1px solid #282c3f;
@@ -115,7 +115,7 @@
             font-size: 15px;
         }
 
-        /* Indicadores em Tempo Real na Aba Monitoramento */
+        /* Grid de Status da Aba Monitoramento */
         .status-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -193,8 +193,9 @@
         <div id="tab-sobre" class="tab-content">
             <div class="card">
                 <h2>Sobre o Projeto</h2>
-                <p>O <strong>Sistema de Monitoramento Pluviométrico</strong> foi desenvolvido para detecção precoce de riscos de alagamento e enchentes em áreas urbanas.</p>
-                <p>Utilizando um microcontrolador ESP32 integrado a sensores de nível d'água, o sistema realiza a leitura contínua dos níveis e envia notificações automáticas em tempo real para o Telegram e para esta plataforma web via Firebase Realtime Database.</p>
+                <p>O <strong>Sistema de Monitoramento de Enchentes utilizando IoT</strong> é uma solução desenvolvida no âmbito do curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC), com o objetivo de mitigar os impactos socioambientais causados por alagamentos urbanos e enchentes.</p>
+                <p>Utilizando a tecnologia de microcontroladores ESP32 integrada a sensores de nível de água de alta precisão, o sistema realiza a captação contínua de dados pluviométricos. As informações são transmitidas em tempo real para a nuvem via Firebase Realtime Database, acionando alertas automatizados no Telegram e disponibilizando métricas e históricos completos nesta plataforma web.</p>
+                <p><strong>Desenvolvedores:</strong> Felipe Ramos Costa, Bianca Luiza de Souza Villela e José Marcos Alves Neves.</p>
             </div>
         </div>
 
@@ -202,18 +203,18 @@
         <div id="tab-monitoramento" class="tab-content">
             <div class="card">
                 <h2>Monitoramento Atual</h2>
-                <p>Estado atual dos sensores de nível em tempo real:</p>
+                <p>Acompanhamento instantâneo do estado dos sensores físicos instalados:</p>
                 <div class="status-grid">
                     <div class="status-box">
-                        <span>Nível Baixo</span>
+                        <span>Nível Baixo (Verde)</span>
                         <div id="status-led1" class="status-badge">Desativado</div>
                     </div>
                     <div class="status-box">
-                        <span>Nível Médio</span>
+                        <span>Nível Médio (Amarelo)</span>
                         <div id="status-led2" class="status-badge">Desativado</div>
                     </div>
                     <div class="status-box">
-                        <span>Nível Alto</span>
+                        <span>Nível Alto (Vermelho)</span>
                         <div id="status-led3" class="status-badge">Desativado</div>
                     </div>
                 </div>
@@ -244,8 +245,9 @@
 
     </div>
 
+    <!-- Script de Integração com o Firebase (REST API otimizada sem travamentos) -->
     <script>
-        // Lógica de alternância entre as abas do menu
+        // Função para alternar entre as abas do menu lateral
         function openTab(tabName) {
             const tabs = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => tab.classList.remove('active'));
@@ -257,7 +259,6 @@
             document.getElementById('btn-' + tabName).classList.add('active');
         }
 
-        // Requisição para o Firebase Realtime Database
         const urlFirebase = "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com/.json";
 
         function atualizarDados() {
@@ -265,14 +266,14 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        // Atualiza os Contadores na aba Histórico
+                        // Atualiza os contadores na aba de Histórico
                         if (data.contadores) {
                             document.getElementById('contador-verde').innerText = data.contadores.verde || 0;
                             document.getElementById('contador-amarelo').innerText = data.contadores.amarelo || 0;
                             document.getElementById('contador-vermelho').innerText = data.contadores.vermelho || 0;
                         }
 
-                        // Atualiza o Status Atual na aba Monitoramento
+                        // Atualiza os status visuais na aba de Monitoramento
                         if (data.painel) {
                             atualizarStatusBadge('status-led1', data.painel.led1);
                             atualizarStatusBadge('status-led2', data.painel.led2);
@@ -294,7 +295,7 @@
             }
         }
 
-        // Executa a busca ao carregar e atualiza a cada 2 segundos
+        // Executa imediatamente e atualiza a cada 2 segundos em segundo plano (sem travar as abas)
         atualizarDados();
         setInterval(atualizarDados, 2000);
     </script>
