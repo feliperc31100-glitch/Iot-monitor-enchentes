@@ -197,7 +197,7 @@
         .led-item.ativo .led-label.vermelho-text { color: #D50000; }
 
         /* -------------------------------------------------------------
-           ESTILO DOS CONTADORES DA ABA HISTÓRICO DE ALERTAS E BOTÃO RESET
+           ESTILO DOS CONTADORES E BOTÃO DE RESET
            ------------------------------------------------------------- */
         .nivel-item {
             display: flex;
@@ -382,7 +382,7 @@
             }
         }
 
-        // Função para zerar os contadores no Firebase
+        // Função para zerar os contadores no Firebase e resetar localmente
         function zerarContadores() {
             if (confirm("Tem certeza que deseja zerar a contagem dos acionamentos?")) {
                 const novosContadores = {
