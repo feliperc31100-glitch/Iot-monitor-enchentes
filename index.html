@@ -68,10 +68,30 @@
         .main-content {
             flex: 1;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 40px;
             overflow-y: auto;
+            position: relative;
+        }
+
+        /* Alerta de Erro / Sequência Incorreta */
+        #banner-erro {
+            display: none;
+            position: absolute;
+            top: 20px;
+            background-color: #d32f2f;
+            color: #ffffff;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
+            animation: fadeIn 0.3s ease-in-out;
+            z-index: 100;
+            text-align: center;
+            max-width: 90%;
         }
 
         /* Secções/Abas */
@@ -292,6 +312,9 @@
     <!-- Conteúdo Principal -->
     <div class="main-content">
 
+        <!-- Notificação de Erro na Sequência dos Sensores -->
+        <div id="banner-erro">⚠️ ERRO DE LEITURA: Os níveis dos sensores não respeitam a sequência física (ex: nível intermediário ou crítico ativado sem os anteriores).</div>
+
         <!-- ABA 1: Sobre o Projeto -->
         <div id="tab-sobre" class="tab-content">
             <div class="card">
@@ -406,11 +429,27 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
+                        let led1 = false;
+                        let led2 = false;
+                        let led3 = false;
+
                         // 1. Atualiza os LEDs da aba Monitoramento
                         if (data.painel) {
-                            setLedState('led-verde', 'item-verde', data.painel.led1);
-                            setLedState('led-amarelo', 'item-amarelo', data.painel.led2);
-                            setLedState('led-vermelho', 'item-vermelho', data.painel.led3);
+                            led1 = Boolean(data.painel.led1);
+                            led2 = Boolean(data.painel.led2);
+                            led3 = Boolean(data.painel.led3);
+
+                            setLedState('led-verde', 'item-verde', led1);
+                            setLedState('led-amarelo', 'item-amarelo', led2);
+                            setLedState('led-vermelho', 'item-vermelho', led3);
+                        }
+
+                        // Validação da Sequência Lógica (Amarelo sem Verde, ou Vermelho isolado)
+                        const bannerErro = document.getElementById('banner-erro');
+                        if ((led2 && !led1) || (led3 && (!led1 || !led2))) {
+                            bannerErro.style.display = 'block';
+                        } else {
+                            bannerErro.style.display = 'none';
                         }
 
                         // 2. Atualiza os contadores da aba Histórico de Alertas
@@ -445,11 +484,11 @@
                             tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
                         }
                     } else {
-                        // Caso o banco esteja completamente vazio
                         document.getElementById('contador-verde').innerText = 0;
                         document.getElementById('contador-amarelo').innerText = 0;
                         document.getElementById('contador-vermelho').innerText = 0;
                         document.getElementById('tabela-historico-geral').innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
+                        document.getElementById('banner-erro').style.display = 'none';
                     }
                 })
                 .catch(error => console.error("Erro na leitura do Firebase:", error));
@@ -477,14 +516,12 @@
                     vermelho: 0
                 };
 
-                // 1. Zera os contadores
                 const p1 = fetch(urlFirebase + "contadores.json", {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(novosContadores)
                 });
 
-                // 2. Apaga o histórico geral enviando 'null' ou usando método DELETE
                 const p2 = fetch(urlFirebase + "historico_geral.json", {
                     method: 'DELETE'
                 });
