@@ -409,11 +409,11 @@
                             setLedState('led-vermelho', 'item-vermelho', data.painel.led3);
                         }
 
-                        // 2. Atualiza os contadores da aba Histórico de Alertas
+                        // 2. Atualiza os contadores da aba Histórico de Alertas (convertendo explicitamente para número)
                         if (data.contadores) {
-                            document.getElementById('contador-verde').innerText = data.contadores.verde || 0;
-                            document.getElementById('contador-amarelo').innerText = data.contadores.amarelo || 0;
-                            document.getElementById('contador-vermelho').innerText = data.contadores.vermelho || 0;
+                            document.getElementById('contador-verde').innerText = Number(data.contadores.verde) || 0;
+                            document.getElementById('contador-amarelo').innerText = Number(data.contadores.amarelo) || 0;
+                            document.getElementById('contador-vermelho').innerText = Number(data.contadores.vermelho) || 0;
                         }
 
                         // 3. Preenche a tabela do Histórico Geral (Permanente)
@@ -421,7 +421,6 @@
                             const tbody = document.getElementById('tabela-historico-geral');
                             tbody.innerHTML = "";
                             
-                            // Ordena os registros do mais recente para o mais antigo com base na chave (timestamp)
                             const chaves = Object.keys(data.historico_geral).sort((a, b) => b - a);
 
                             chaves.forEach(key => {
