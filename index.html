@@ -351,7 +351,7 @@
                 </div>
 
                 <div class="reset-btn-container">
-                    <button class="btn-reset" onclick="zerarContadores()">Zerar Histórico</button>
+                    <button class="btn-reset" onclick="zerarContadores()">Zerar Histórico e Registros</button>
                 </div>
             </div>
         </div>
@@ -376,6 +376,10 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <div class="reset-btn-container">
+                    <button class="btn-reset" onclick="zerarContadores()">Apagar Histórico Geral</button>
                 </div>
             </div>
         </div>
@@ -409,18 +413,22 @@
                             setLedState('led-vermelho', 'item-vermelho', data.painel.led3);
                         }
 
-                        // 2. Atualiza os contadores da aba Histórico de Alertas (convertendo explicitamente para número)
+                        // 2. Atualiza os contadores da aba Histórico de Alertas
                         if (data.contadores) {
                             document.getElementById('contador-verde').innerText = Number(data.contadores.verde) || 0;
                             document.getElementById('contador-amarelo').innerText = Number(data.contadores.amarelo) || 0;
                             document.getElementById('contador-vermelho').innerText = Number(data.contadores.vermelho) || 0;
+                        } else {
+                            document.getElementById('contador-verde').innerText = 0;
+                            document.getElementById('contador-amarelo').innerText = 0;
+                            document.getElementById('contador-vermelho').innerText = 0;
                         }
 
-                        // 3. Preenche a tabela do Histórico Geral (Permanente)
+                        // 3. Preenche a tabela do Histórico Geral
+                        const tbody = document.getElementById('tabela-historico-geral');
+                        tbody.innerHTML = "";
+
                         if (data.historico_geral) {
-                            const tbody = document.getElementById('tabela-historico-geral');
-                            tbody.innerHTML = "";
-                            
                             const chaves = Object.keys(data.historico_geral).sort((a, b) => b - a);
 
                             chaves.forEach(key => {
@@ -433,7 +441,15 @@
                                 `;
                                 tbody.appendChild(tr);
                             });
+                        } else {
+                            tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
                         }
+                    } else {
+                        // Caso o banco esteja completamente vazio
+                        document.getElementById('contador-verde').innerText = 0;
+                        document.getElementById('contador-amarelo').innerText = 0;
+                        document.getElementById('contador-vermelho').innerText = 0;
+                        document.getElementById('tabela-historico-geral').innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
                     }
                 })
                 .catch(error => console.error("Erro na leitura do Firebase:", error));
@@ -452,27 +468,36 @@
             }
         }
 
-        // Função para zerar apenas os contadores visuais, sem mexer no Histórico Geral
+        // Função para zerar contadores E apagar o histórico geral do Firebase
         function zerarContadores() {
-            if (confirm("Tem certeza que deseja zerar a contagem desta tela? O histórico geral continuará salvo.")) {
+            if (confirm("Tem certeza que deseja apagar todos os contadores e o histórico geral? Essa ação não pode ser desfeita.")) {
                 const novosContadores = {
                     verde: 0,
                     amarelo: 0,
                     vermelho: 0
                 };
 
-                fetch(urlFirebase + "contadores.json", {
+                // 1. Zera os contadores
+                const p1 = fetch(urlFirebase + "contadores.json", {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(novosContadores)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('contador-verde').innerText = 0;
-                    document.getElementById('contador-amarelo').innerText = 0;
-                    document.getElementById('contador-vermelho').innerText = 0;
-                })
-                .catch(error => console.error("Erro ao zerar contadores:", error));
+                });
+
+                // 2. Apaga o histórico geral enviando 'null' ou usando método DELETE
+                const p2 = fetch(urlFirebase + "historico_geral.json", {
+                    method: 'DELETE'
+                });
+
+                Promise.all([p1, p2])
+                    .then(() => {
+                        document.getElementById('contador-verde').innerText = 0;
+                        document.getElementById('contador-amarelo').innerText = 0;
+                        document.getElementById('contador-vermelho').innerText = 0;
+                        document.getElementById('tabela-historico-geral').innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
+                        alert("Histórico e contadores limpos com sucesso!");
+                    })
+                    .catch(error => console.error("Erro ao limpar dados:", error));
             }
         }
 
