@@ -444,10 +444,23 @@
                             setLedState('led-vermelho', 'item-vermelho', led3);
                         }
 
-                        // Validação da Sequência Lógica (Amarelo sem Verde, ou Vermelho isolado)
+                        // Validação rigorosa da Sequência Física da Enchente
                         const bannerErro = document.getElementById('banner-erro');
-                        if ((led2 && !led1) || (led3 && (!led1 || !led2))) {
+                        let temErro = false;
+
+                        // Regra: Amarelo não pode acionar sem o Verde
+                        if (led2 && !led1) {
+                            temErro = true;
+                        }
+
+                        // Regra: Vermelho não pode acionar sem o Verde E o Amarelo
+                        if (led3 && (!led1 || !led2)) {
+                            temErro = true;
+                        }
+
+                        if (temErro) {
                             bannerErro.style.display = 'block';
+                            bannerErro.innerText = "⚠️ ERRO DE LEITURA: Sequência inválida! O nível superior acionou sem os sensores inferiores correspondentes.";
                         } else {
                             bannerErro.style.display = 'none';
                         }
