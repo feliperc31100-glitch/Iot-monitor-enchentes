@@ -306,7 +306,7 @@
     <div class="main-content">
 
         <!-- Notificação de Erro na Sequência dos Sensores -->
-        <div id="banner-erro">⚠️ ERRO DE LEITURA: O nível crítico acionou de forma isolada.</div>
+        <div id="banner-erro">⚠️ ERRO DE LEITURA: Os níveis físicos não respeitam a progressão da enchente (ex: nível intermediário ou crítico ativado sem os anteriores).</div>
 
         <!-- ABA 1: Sobre o Projeto -->
         <div id="tab-sobre" class="tab-content">
@@ -316,7 +316,6 @@
                 </div>
                 <h2>Sobre o Projeto</h2>
                 <p>O Sistema de Monitoramento Pluviométrico Utilizando IoT é um projeto acadêmico desenvolvido com o objetivo de criar uma solução tecnológica acessível para o monitoramento de níveis de água em áreas suscetíveis a enchentes e alagamentos.</p>
-                <p>O sistema utiliza o microcontrolador ESP32, sensores de nível de água, sinalização visual por LEDs e uma plataforma web integrada para acompanhar continuamente as condições monitoradas.</p>
                 <p>Este projeto foi desenvolvido por Bianca Luiza de Souza Villela, Felipe Ramos Costa e José Marcos Alves Neves, alunos do curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC), como Trabalho de Conclusão de Curso (TCC).</p>
             </div>
         </div>
@@ -423,31 +422,48 @@
                 .then(data => {
                     emCarregamento = false;
                     
-                    let led1 = false;
-                    let led2 = false;
-                    let led3 = false;
-
+                    // 1. Atualiza os LEDs visuais do painel
                     if (data && data.painel) {
-                        led1 = Boolean(data.painel.led1);
-                        led2 = Boolean(data.painel.led2);
-                        led3 = Boolean(data.painel.led3);
-
-                        setLedState('led-verde', 'item-verde', led1);
-                        setLedState('led-amarelo', 'item-amarelo', led2);
-                        setLedState('led-vermelho', 'item-vermelho', led3);
+                        setLedState('led-verde', 'item-verde', Boolean(data.painel.led1));
+                        setLedState('led-amarelo', 'item-amarelo', Boolean(data.painel.led2));
+                        setLedState('led-vermelho', 'item-vermelho', Boolean(data.painel.led3));
                     } else {
                         setLedState('led-verde', 'item-verde', false);
                         setLedState('led-amarelo', 'item-amarelo', false);
                         setLedState('led-vermelho', 'item-vermelho', false);
                     }
 
+                    // 2. Validação estrita baseada nos SENSORES FÍSICOS REAIS
+                    let sVerde = false;
+                    let sAmarelo = false;
+                    let sVermelho = false;
+
+                    if (data && data.sensores) {
+                        sVerde = Boolean(data.sensores.verde);
+                        sAmarelo = Boolean(data.sensores.amarelo);
+                        sVermelho = Boolean(data.sensores.vermelho);
+                    }
+
                     const bannerErro = document.getElementById('banner-erro');
-                    if (led3 && !led1 && !led2) {
+                    let temErro = false;
+
+                    // Regra do Amarelo: Não pode acionar sem o Verde
+                    if (sAmarelo && !sVerde) {
+                        temErro = true;
+                    }
+
+                    // Regra do Vermelho: Não pode acionar sem o Verde E o Amarelo juntos
+                    if (sVermelho && (!sVerde || !sAmarelo)) {
+                        temErro = true;
+                    }
+
+                    if (temErro) {
                         bannerErro.style.display = 'block';
                     } else {
                         bannerErro.style.display = 'none';
                     }
 
+                    // 3. Atualiza os contadores
                     if (data && data.contadores) {
                         document.getElementById('contador-verde').innerText = Number(data.contadores.verde) || 0;
                         document.getElementById('contador-amarelo').innerText = Number(data.contadores.amarelo) || 0;
@@ -458,6 +474,7 @@
                         document.getElementById('contador-vermelho').innerText = 0;
                     }
 
+                    // 4. Preenche a tabela do Histórico Geral
                     const tbody = document.getElementById('tabela-historico-geral');
                     if (data && data.historico_geral) {
                         const chaves = Object.keys(data.historico_geral).sort((a, b) => b - a);
@@ -469,8 +486,7 @@
                                 <tr>
                                     <td>${item.data_hora || '---'}</td>
                                     <td><strong>${item.nivel || '---'}</strong></td>
-                                </tr>
-                            `;
+                                `;
                         });
                         tbody.innerHTML = htmlTabela;
                     } else {
