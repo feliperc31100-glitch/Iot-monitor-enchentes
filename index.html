@@ -1,154 +1,416 @@
-<!-- Script de Integração com Firebase -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Monitoramento Pluviométrico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #12141d;
+            color: #ffffff;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Menu Lateral */
+        .sidebar {
+            width: 260px;
+            background-color: #181b28;
+            display: flex;
+            flex-direction: column;
+            padding: 25px 20px;
+            border-right: 1px solid #222638;
+            flex-shrink: 0;
+        }
+
+        .sidebar h1 {
+            color: #0088ff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.4;
+            font-weight: 700;
+        }
+
+        .sidebar button {
+            background: none;
+            border: none;
+            color: #a0a6b8;
+            text-align: left;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .sidebar button:hover {
+            background-color: #222638;
+            color: #ffffff;
+        }
+
+        .sidebar button.active {
+            background-color: #0056ff;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Alerta de Erro / Sequência Incorreta */
+        #banner-erro {
+            display: none;
+            position: absolute;
+            top: 20px;
+            background-color: #d32f2f;
+            color: #ffffff;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
+            animation: fadeIn 0.3s ease-in-out;
+            z-index: 100;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        /* Secções/Abas */
+        .tab-content {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards e Estilização */
+        .card {
+            background-color: #1b1f2e;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid #282c3f;
+        }
+
+        .card h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #ffffff;
+            border-bottom: 2px solid #0056ff;
+            padding-bottom: 10px;
+        }
+
+        .card p {
+            color: #c0c6d8;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 15px;
+            text-align: justify;
+        }
+
+        /* Logo UMC */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-container img {
+            max-height: 70px;
+            object-fit: contain;
+        }
+
+        /* Status LEDs */
+        .status-card {
+            background-color: #1b1f2e;
+            padding: 40px 30px;
+            border-radius: 12px;
+            width: 480px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            margin: 0 auto;
+        }
+
+        .status-card h2 {
+            border: none;
+            font-size: 22px;
+            margin-bottom: 35px;
+            color: #ffffff;
+        }
+
+        .leds-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+        }
+
+        .led-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 110px;
+        }
+
+        .circle-led {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background-color: #2b3042;
+            margin-bottom: 15px;
+            transition: all 0.4s ease;
+        }
+
+        .circle-led.verde.ativo {
+            background-color: #00C853;
+            box-shadow: 0 0 25px #00C853, 0 0 45px rgba(0, 200, 83, 0.6);
+        }
+
+        .circle-led.amarelo.ativo {
+            background-color: #FFD600;
+            box-shadow: 0 0 25px #FFD600, 0 0 45px rgba(255, 214, 0, 0.6);
+        }
+
+        .circle-led.vermelho.ativo {
+            background-color: #D50000;
+            box-shadow: 0 0 25px #D50000, 0 0 45px rgba(213, 0, 0, 0.6);
+        }
+
+        .led-label {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+            color: #6a7185;
+            transition: color 0.3s ease;
+        }
+
+        .led-item.ativo .led-label.verde-text { color: #00C853; }
+        .led-item.ativo .led-label.amarelo-text { color: #FFD600; }
+        .led-item.ativo .led-label.vermelho-text { color: #D50000; }
+
+        /* Contadores e Botão */
+        .nivel-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: #12141d;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .nivel-verde { border-left: 5px solid #00C853; }
+        .nivel-amarelo { border-left: 5px solid #FFD600; }
+        .nivel-vermelho { border-left: 5px solid #D50000; }
+
+        .contador-num { font-size: 24px; font-weight: bold; }
+        .nivel-verde .contador-num { color: #00C853; }
+        .nivel-amarelo .contador-num { color: #FFD600; }
+        .nivel-vermelho .contador-num { color: #D50000; }
+
+        .reset-btn-container {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .btn-reset {
+            background-color: #d32f2f;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+        }
+
+        .btn-reset:hover {
+            background-color: #f44336;
+            box-shadow: 0 6px 16px rgba(244, 67, 54, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Tabela do Histórico Geral */
+        .table-container {
+            max-height: 350px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid #282c3f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            background-color: #12141d;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #181b28;
+            color: #0088ff;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tr:not(:last-child) td {
+            border-bottom: 1px solid #222638;
+        }
+
+        td {
+            color: #c0c6d8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Menu Lateral -->
+    <div class="sidebar">
+        <h1>Sistema de<br>Monitoramento<br>Pluviométrico</h1>
+        <button onclick="openTab('sobre')" id="btn-sobre">Sobre o Projeto</button>
+        <button onclick="openTab('monitoramento')" id="btn-monitoramento">Monitoramento</button>
+        <button onclick="openTab('historico')" id="btn-historico" class="active">Histórico de Alertas</button>
+        <button onclick="openTab('geral')" id="btn-geral">Histórico Geral</button>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+
+        <!-- Notificação de Erro na Sequência dos Sensores -->
+        <div id="banner-erro">⚠️ ERRO DE LEITURA: Os níveis dos sensores não respeitam a sequência física (ex: nível intermediário ou crítico ativado sem os anteriores).</div>
+
+        <!-- ABA 1: Sobre o Projeto -->
+        <div id="tab-sobre" class="tab-content">
+            <div class="card">
+                <div class="logo-container">
+                    <img src="logo-umc.png" alt="Logo UMC" onerror="this.style.display='none'">
+                </div>
+                <h2>Sobre o Projeto</h2>
+                <p>O Sistema de Monitoramento Pluviométrico Utilizando IoT é um projeto acadêmico desenvolvido com o objetivo de criar uma solução tecnológica acessível para o monitoramento de níveis de água em áreas suscetíveis a enchentes e alagamentos. A proposta surgiu a partir da crescente necessidade de ferramentas capazes de auxiliar na prevenção de desastres naturais, fornecendo informações em tempo real e contribuindo para a tomada de decisões em situações de risco.</p>
+                <p>O sistema utiliza o microcontrolador ESP32, sensores de nível de água, sinalização visual por LEDs e uma plataforma web integrada para acompanhar continuamente as condições monitoradas. Conforme o nível da água aumenta, o sistema identifica diferentes estágios de risco, atualiza automaticamente as informações na interface online e pode emitir alertas remotos por meio do Telegram. Em situações críticas, também é possível acionar um sistema de bombeamento para auxiliar na drenagem da água acumulada.</p>
+                <p>Além do monitoramento em tempo real, o projeto foi concebido para permitir futuras expansões, incluindo integração com serviços meteorológicos, geolocalização, armazenamento em nuvem e recursos voltados ao conceito de cidades inteligentes. Seu desenvolvimento demonstra como tecnologias de baixo custo baseadas em Internet das Coisas (IoT) podem ser aplicadas para promover maior segurança, prevenção de riscos e proteção socioambiental.</p>
+                <p>Este projeto foi desenvolvido por Bianca Luiza de Souza Villela, Felipe Ramos Costa e José Marcos Alves Neves, alunos do curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC), como Trabalho de Conclusão de Curso (TCC).</p>
+            </div>
+        </div>
+
+        <!-- ABA 2: Monitoramento em Tempo Real -->
+        <div id="tab-monitoramento" class="tab-content">
+            <div class="status-card">
+                <h2>Status em Tempo Real</h2>
+                
+                <div class="leds-container">
+                    <div id="item-verde" class="led-item">
+                        <div id="led-verde" class="circle-led verde"></div>
+                        <span class="led-label verde-text">Verde<br>Seguro</span>
+                    </div>
+
+                    <div id="item-amarelo" class="led-item">
+                        <div id="led-amarelo" class="circle-led amarelo"></div>
+                        <span class="led-label amarelo-text">Amarelo<br>Atenção</span>
+                    </div>
+
+                    <div id="item-vermelho" class="led-item">
+                        <div id="led-vermelho" class="circle-led vermelho"></div>
+                        <span class="led-label vermelho-text">Vermelho<br>Crítico</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 3: Histórico de Alertas (Contadores com Reset) -->
+        <div id="tab-historico" class="tab-content active">
+            <div class="card">
+                <h2 style="border: none; margin-bottom: 25px; text-align: center;">Acionamentos dos Sensores</h2>
+
+                <div class="nivel-item nivel-verde">
+                    <span>Nível Seguro (Verde)</span>
+                    <span id="contador-verde" class="contador-num">0</span>
+                </div>
+
+                <div class="nivel-item nivel-amarelo">
+                    <span>Nível Atenção (Amarelo)</span>
+                    <span id="contador-amarelo" class="contador-num">0</span>
+                </div>
+
+                <div class="nivel-item nivel-vermelho">
+                    <span>Nível Crítico (Vermelho)</span>
+                    <span id="contador-vermelho" class="contador-num">0</span>
+                </div>
+
+                <div class="reset-btn-container">
+                    <button class="btn-reset" onclick="zerarContadores()">Zerar Histórico e Registros</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 4: Histórico Geral (Permanente) -->
+        <div id="tab-geral" class="tab-content">
+            <div class="card">
+                <h2>Histórico Geral de Acionamentos</h2>
+                <p>Banco de dados contínuo com todos os registros de acionamentos armazenados na nuvem:</p>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data e Horário</th>
+                                <th>Nível Identificado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-historico-geral">
+                            <tr>
+                                <td colspan="2" style="text-align: center; color: #6a7185;">Carregando registros...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="reset-btn-container">
+                    <button class="btn-reset" onclick="zerarContadores()">Apagar Histórico Geral</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script de Integração com Firebase -->
     <script>
         function openTab(tabName) {
             const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
-
-            const buttons = document.querySelectorAll('.sidebar button');
-            buttons.forEach(btn => btn.classList.remove('active'));
-
-            document.getElementById('tab-' + tabName).classList.add('active');
-            document.getElementById('btn-' + tabName).classList.add('active');
-        }
-
-        const urlFirebase = "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com/";
-
-        function atualizarDados() {
-            fetch(urlFirebase + ".json")
-                .then(response => response.json())
-                .then(data => {
-                    if (data) {
-                        let led1 = false;
-                        let led2 = false;
-                        let led3 = false;
-
-                        // 1. Atualiza os LEDs da aba Monitoramento (Painel Visual)
-                        if (data.painel) {
-                            led1 = Boolean(data.painel.led1);
-                            led2 = Boolean(data.painel.led2);
-                            led3 = Boolean(data.painel.led3);
-
-                            setLedState('led-verde', 'item-verde', led1);
-                            setLedState('led-amarelo', 'item-amarelo', led2);
-                            setLedState('led-vermelho', 'item-vermelho', led3);
-                        }
-
-                        // 2. Validação baseada nos SENSORES FÍSICOS REAIS da água
-                        let sVerde = false;
-                        let sAmarelo = false;
-                        let sVermelho = false;
-
-                        if (data.sensores) {
-                            sVerde = Boolean(data.sensores.verde);
-                            sAmarelo = Boolean(data.sensores.amarelo);
-                            sVermelho = Boolean(data.sensores.vermelho);
-                        }
-
-                        const bannerErro = document.getElementById('banner-erro');
-                        let temErro = false;
-
-                        // Regra: Amarelo físico ativado sem o Verde físico = Erro
-                        if (sAmarelo && !sVerde) {
-                            temErro = true;
-                        }
-
-                        // Regra: Vermelho físico ativado sem o Verde E o Amarelo físicos = Erro
-                        if (sVermelho && (!sVerde || !sAmarelo)) {
-                            temErro = true;
-                        }
-
-                        if (temErro) {
-                            bannerErro.style.display = 'block';
-                            bannerErro.innerText = "⚠️ ERRO DE LEITURA: Sequência inválida! O nível superior acionou sem os sensores inferiores correspondentes.";
-                        } else {
-                            bannerErro.style.display = 'none';
-                        }
-
-                        // 3. Atualiza os contadores da aba Histórico de Alertas
-                        if (data.contadores) {
-                            document.getElementById('contador-verde').innerText = Number(data.contadores.verde) || 0;
-                            document.getElementById('contador-amarelo').innerText = Number(data.contadores.amarelo) || 0;
-                            document.getElementById('contador-vermelho').innerText = Number(data.contadores.vermelho) || 0;
-                        } else {
-                            document.getElementById('contador-verde').innerText = 0;
-                            document.getElementById('contador-amarelo').innerText = 0;
-                            document.getElementById('contador-vermelho').innerText = 0;
-                        }
-
-                        // 4. Preenche a tabela do Histórico Geral
-                        const tbody = document.getElementById('tabela-historico-geral');
-                        tbody.innerHTML = "";
-
-                        if (data.historico_geral) {
-                            const chaves = Object.keys(data.historico_geral).sort((a, b) => b - a);
-
-                            chaves.forEach(key => {
-                                const item = data.historico_geral[key];
-                                const tr = document.createElement('tr');
-                                
-                                tr.innerHTML = `
-                                    <td>${item.data_hora || '---'}</td>
-                                    <td><strong>${item.nivel || '---'}</strong></td>
-                                `;
-                                tbody.appendChild(tr);
-                            });
-                        } else {
-                            tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
-                        }
-                    } else {
-                        document.getElementById('contador-verde').innerText = 0;
-                        document.getElementById('contador-amarelo').innerText = 0;
-                        document.getElementById('contador-vermelho').innerText = 0;
-                        document.getElementById('tabela-historico-geral').innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
-                        document.getElementById('banner-erro').style.display = 'none';
-                    }
-                })
-                .catch(error => console.error("Erro na leitura do Firebase:", error));
-        }
-
-        function setLedState(ledId, itemId, estado) {
-            const led = document.getElementById(ledId);
-            const item = document.getElementById(itemId);
-
-            if (estado) {
-                led.classList.add('ativo');
-                item.classList.add('ativo');
-            } else {
-                led.classList.remove('ativo');
-                item.classList.remove('ativo');
-            }
-        }
-
-        function zerarContadores() {
-            if (confirm("Tem certeza que deseja apagar todos os contadores e o histórico geral? Essa ação não pode ser desfeita.")) {
-                const novosContadores = {
-                    verde: 0,
-                    amarelo: 0,
-                    vermelho: 0
-                };
-
-                const p1 = fetch(urlFirebase + "contadores.json", {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(novosContadores)
-                });
-
-                const p2 = fetch(urlFirebase + "historico_geral.json", {
-                    method: 'DELETE'
-                });
-
-                Promise.all([p1, p2])
-                    .then(() => {
-                        document.getElementById('contador-verde').innerText = 0;
-                        document.getElementById('contador-amarelo').innerText = 0;
-                        document.getElementById('contador-vermelho').innerText = 0;
-                        document.getElementById('tabela-historico-geral').innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
-                        alert("Histórico e contadores limpos com sucesso!");
-                    })
-                    .catch(error => console.error("Erro ao limpar dados:", error));
-            }
-        }
-
-        atualizarDados();
-        setInterval(atualizarDados, 2000);
-    </script>
+            tabs.forEach(tab => tab.classList.remove('
