@@ -12,99 +12,74 @@
         }
 
         const urlFirebase = "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com/";
-        let emCarregamento = false; // Trava para evitar sobrecarga de requisições
+        let emCarregamento = false;
 
         function atualizarDados() {
-            if (emCarregamento) return; // Se já estiver buscando, pula o ciclo atual
+            if (emCarregamento) return;
             emCarregamento = true;
 
             fetch(urlFirebase + ".json")
                 .then(response => response.json())
                 .then(data => {
                     emCarregamento = false;
-                    if (data) {
-                        let led1 = false;
-                        let led2 = false;
-                        let led3 = false;
+                    
+                    let led1 = false;
+                    let led2 = false;
+                    let led3 = false;
 
-                        // 1. Atualiza os LEDs da aba Monitoramento (Painel Visual)
-                        if (data.painel) {
-                            led1 = Boolean(data.painel.led1);
-                            led2 = Boolean(data.painel.led2);
-                            led3 = Boolean(data.painel.led3);
+                    if (data && data.painel) {
+                        led1 = Boolean(data.painel.led1);
+                        led2 = Boolean(data.painel.led2);
+                        led3 = Boolean(data.painel.led3);
 
-                            setLedState('led-verde', 'item-verde', led1);
-                            setLedState('led-amarelo', 'item-amarelo', led2);
-                            setLedState('led-vermelho', 'item-vermelho', led3);
-                        }
+                        setLedState('led-verde', 'item-verde', led1);
+                        setLedState('led-amarelo', 'item-amarelo', led2);
+                        setLedState('led-vermelho', 'item-vermelho', led3);
+                    } else {
+                        setLedState('led-verde', 'item-verde', false);
+                        setLedState('led-amarelo', 'item-amarelo', false);
+                        setLedState('led-vermelho', 'item-vermelho', false);
+                    }
 
-                        // 2. Validação baseada nos SENSORES FÍSICOS REAIS da água
-                        let sVerde = false;
-                        let sAmarelo = false;
-                        let sVermelho = false;
+                    // Validação de segurança limpa:
+                    // Só acusa erro se o Vermelho estiver ativo de forma totalmente isolada (sem verde e sem amarelo)
+                    const bannerErro = document.getElementById('banner-erro');
+                    if (led3 && !led1 && !led2) {
+                        bannerErro.style.display = 'block';
+                        bannerErro.innerText = "⚠️ ERRO DE LEITURA: O nível crítico acionou sem os níveis anteriores.";
+                    } else {
+                        bannerErro.style.display = 'none';
+                    }
 
-                        if (data.sensores) {
-                            sVerde = Boolean(data.sensores.verde);
-                            sAmarelo = Boolean(data.sensores.amarelo);
-                            sVermelho = Boolean(data.sensores.vermelho);
-                        }
-
-                        const bannerErro = document.getElementById('banner-erro');
-                        let temErro = false;
-
-                        // Regra: Amarelo físico ativado sem o Verde físico = Erro
-                        if (sAmarelo && !sVerde) {
-                            temErro = true;
-                        }
-
-                        // Regra: Vermelho físico ativado sem o Verde E o Amarelo físicos = Erro
-                        if (sVermelho && (!sVerde || !sAmarelo)) {
-                            temErro = true;
-                        }
-
-                        if (temErro) {
-                            bannerErro.style.display = 'block';
-                            bannerErro.innerText = "⚠️ ERRO DE LEITURA: Sequência inválida! O nível superior acionou sem os sensores inferiores correspondentes.";
-                        } else {
-                            bannerErro.style.display = 'none';
-                        }
-
-                        // 3. Atualiza os contadores da aba Histórico de Alertas
-                        if (data.contadores) {
-                            document.getElementById('contador-verde').innerText = Number(data.contadores.verde) || 0;
-                            document.getElementById('contador-amarelo').innerText = Number(data.contadores.amarelo) || 0;
-                            document.getElementById('contador-vermelho').innerText = Number(data.contadores.vermelho) || 0;
-                        } else {
-                            document.getElementById('contador-verde').innerText = 0;
-                            document.getElementById('contador-amarelo').innerText = 0;
-                            document.getElementById('contador-vermelho').innerText = 0;
-                        }
-
-                        // 4. Preenche a tabela do Histórico Geral (apenas se houver mudanças reais para poupar processamento)
-                        const tbody = document.getElementById('tabela-historico-geral');
-                        if (data.historico_geral) {
-                            const chaves = Object.keys(data.historico_geral).sort((a, b) => b - a);
-                            let htmlTabela = "";
-
-                            chaves.forEach(key => {
-                                const item = data.historico_geral[key];
-                                htmlTabela += `
-                                    <tr>
-                                        <td>${item.data_hora || '---'}</td>
-                                        <td><strong>${item.nivel || '---'}</strong></td>
-                                    </tr>
-                                `;
-                            });
-                            tbody.innerHTML = htmlTabela;
-                        } else {
-                            tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
-                        }
+                    // 2. Atualiza os contadores
+                    if (data && data.contadores) {
+                        document.getElementById('contador-verde').innerText = Number(data.contadores.verde) || 0;
+                        document.getElementById('contador-amarelo').innerText = Number(data.contadores.amarelo) || 0;
+                        document.getElementById('contador-vermelho').innerText = Number(data.contadores.vermelho) || 0;
                     } else {
                         document.getElementById('contador-verde').innerText = 0;
                         document.getElementById('contador-amarelo').innerText = 0;
                         document.getElementById('contador-vermelho').innerText = 0;
-                        document.getElementById('tabela-historico-geral').innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
-                        document.getElementById('banner-erro').style.display = 'none';
+                    }
+
+                    // 3. Preenche a tabela do Histórico Geral
+                    const tbody = document.getElementById('tabela-historico-geral');
+                    if (data && data.historico_geral) {
+                        const chaves = Object.keys(data.historico_geral).sort((a, b) => b - a);
+                        let htmlTabela = "";
+
+                        chaves.forEach(key => {
+                            const item = data.historico_geral[key];
+                            htmlTabela += `
+                                <tr>
+                                    <td>${item.data_hora || '---'}</td>
+                                    <td><strong>${item.nivel || '---'}</strong></td>
+                                </tr>
+                            `;
+                        });
+                        tbody.innerHTML = htmlTabela;
+                    } else {
+                        tbody.innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
                     }
                 })
                 .catch(error => {
@@ -156,7 +131,6 @@
             }
         }
 
-        // Atualização contínua em segundo plano
         atualizarDados();
-        setInterval(atualizarDados, 3000); // Subido ligeiramente para 3 segundos para aliviar o navegador
+        setInterval(atualizarDados, 3000);
     </script>
