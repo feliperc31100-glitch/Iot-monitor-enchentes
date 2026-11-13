@@ -135,6 +135,43 @@
             display: none;
         }
 
+        /* Rodapé da Sidebar com Identificação Textual UMC */
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #222638;
+            text-align: center;
+        }
+
+        .institutional-badge {
+            background-color: #12141d;
+            border: 1px solid #222638;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .institutional-badge .inst-acronym {
+            color: #0088ff;
+            font-weight: 800;
+            font-size: 14px;
+            display: block;
+        }
+
+        .institutional-badge .inst-name {
+            color: #8a92a9;
+            font-size: 11px;
+            display: block;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar.collapsed .inst-name {
+            display: none;
+        }
+
         /* Conteúdo Principal */
         .main-content {
             flex: 1;
@@ -198,6 +235,26 @@
             margin-bottom: 15px;
             font-size: 15px;
             text-align: justify;
+        }
+
+        .academic-header {
+            background-color: #12141d;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #0056ff;
+        }
+
+        .academic-header h3 {
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .academic-header span {
+            color: #0088ff;
+            font-size: 13px;
+            font-weight: 600;
         }
 
         /* Status LEDs */
@@ -401,6 +458,14 @@
                 <span class="nav-text">Histórico Geral</span>
             </button>
         </div>
+
+        <!-- Identificação Textual UMC -->
+        <div class="sidebar-footer">
+            <div class="institutional-badge" title="Universidade de Mogi das Cruzes">
+                <span class="inst-acronym">UMC</span>
+                <span class="inst-name">Universidade de Mogi das Cruzes</span>
+            </div>
+        </div>
     </div>
 
     <!-- Conteúdo Principal -->
@@ -412,6 +477,10 @@
         <!-- ABA 1: Sobre o Projeto -->
         <div id="tab-sobre" class="tab-content">
             <div class="card">
+                <div class="academic-header">
+                    <h3>Universidade de Mogi das Cruzes (UMC)</h3>
+                    <span>Trabalho de Conclusão de Curso - Engenharia Elétrica</span>
+                </div>
                 <h2>Sobre o Projeto</h2>
                 <p>O Sistema de Monitoramento Pluviométrico Utilizando IoT é um projeto acadêmico desenvolvido com o objetivo de criar uma solução tecnológica acessível para o monitoramento de níveis de água em áreas suscetíveis a enchentes e alagamentos.</p>
                 <p>Este projeto foi desenvolvido por Bianca Luiza de Souza Villela, Felipe Ramos Costa e José Marcos Alves Neves, alunos do curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC), como Trabalho de Conclusão de Curso (TCC).</p>
