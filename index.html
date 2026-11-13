@@ -184,9 +184,9 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
-            padding: 40px;
+            padding: 30px;
             overflow-y: auto;
             position: relative;
         }
@@ -226,9 +226,10 @@
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             border: 1px solid #282c3f;
+            width: 100%;
         }
 
-        /* Estilos customizados da Aba Sobre (Inspirados no layout da imagem) */
+        /* Estilos customizados da Aba Sobre */
         .about-section-title {
             color: #0088ff;
             font-size: 15px;
@@ -638,7 +639,7 @@
         <!-- Notificação de Erro na Sequência dos Sensores -->
         <div id="banner-erro">⚠️ ERRO DE LEITURA: Os níveis físicos não respeitam a progressão da enchente (ex: nível intermediário ou crítico ativado sem os anteriores).</div>
 
-        <!-- ABA 1: Sobre o Projeto (Formatada exatamente como na imagem de referência) -->
+        <!-- ABA 1: Sobre o Projeto -->
         <div id="tab-sobre" class="tab-content">
             <div class="card">
                 
@@ -835,6 +836,9 @@
 
             document.getElementById('tab-' + tabName).classList.add('active');
             document.getElementById('btn-' + tabName).classList.add('active');
+
+            // Garante que o scroll da área principal volte para o topo ao trocar de aba
+            document.querySelector('.main-content').scrollTop = 0;
         }
 
         const urlFirebase = "https://monitor-de-enchentes-778b5-default-rtdb.firebaseio.com/";
