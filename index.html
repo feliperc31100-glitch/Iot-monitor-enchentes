@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Monitoramento Pluviométrico</title>
+    <title>Sistema de Monitoramento Pluviométrico - UMC</title>
     <style>
         * {
             margin: 0;
@@ -26,15 +26,17 @@
             background-color: #181b28;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             padding: 25px 20px;
             border-right: 1px solid #222638;
             flex-shrink: 0;
+            overflow-y: auto;
         }
 
-        .sidebar h1 {
+        .sidebar-top h1 {
             color: #0088ff;
             font-size: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             line-height: 1.4;
             font-weight: 700;
         }
@@ -64,6 +66,41 @@
             font-weight: 600;
         }
 
+        /* Assinatura Institucional no Rodapé da Sidebar */
+        .sidebar-footer {
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #222638;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 8px;
+        }
+
+        .sidebar-logo-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-logo-box:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(0, 136, 255, 0.35);
+        }
+
+        .sidebar-footer span {
+            font-size: 11px;
+            color: #6a7185;
+            letter-spacing: 0.4px;
+        }
+
         /* Conteúdo Principal */
         .main-content {
             flex: 1;
@@ -91,6 +128,100 @@
             z-index: 100;
             text-align: center;
             max-width: 90%;
+        }
+
+        /* Toast de Feedback (substitui alert) */
+        #toast-feedback {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background-color: #00C853;
+            color: #ffffff;
+            padding: 14px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+            z-index: 300;
+            animation: fadeIn 0.25s ease;
+        }
+
+        /* Modal de Confirmação Customizado (substitui confirm) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 12, 18, 0.78);
+            backdrop-filter: blur(4px);
+            z-index: 250;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background-color: #1b1f2e;
+            border: 1px solid #2e344b;
+            border-radius: 12px;
+            padding: 28px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        .modal-box h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .modal-box p {
+            font-size: 14px;
+            color: #a0a6b8;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-modal-cancel {
+            background-color: #282c3f;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-modal-cancel:hover {
+            background-color: #353b54;
+        }
+
+        .btn-modal-confirm {
+            background-color: #d32f2f;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-modal-confirm:hover {
+            background-color: #f44336;
         }
 
         /* Secções/Abas */
@@ -129,15 +260,24 @@
             text-align: justify;
         }
 
-        /* Logo UMC */
+        /* Destaque do Logo UMC na Aba Sobre o Projeto */
         .logo-container {
-            text-align: center;
-            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 26px;
         }
 
-        .logo-container img {
-            max-height: 70px;
-            object-fit: contain;
+        .umc-hero-badge {
+            background: linear-gradient(145deg, #ffffff 0%, #f1f5fb 100%);
+            padding: 16px 32px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 86, 255, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Status LEDs */
@@ -145,10 +285,12 @@
             background-color: #1b1f2e;
             padding: 40px 30px;
             border-radius: 12px;
-            width: 480px;
+            width: 100%;
+            max-width: 480px;
             text-align: center;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             margin: 0 auto;
+            border: 1px solid #282c3f;
         }
 
         .status-card h2 {
@@ -289,17 +431,84 @@
         td {
             color: #c0c6d8;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #222638;
+                padding: 18px;
+            }
+
+            .sidebar-top h1 {
+                margin-bottom: 16px;
+                font-size: 18px;
+                text-align: center;
+            }
+
+            .sidebar-nav {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .sidebar button {
+                margin-bottom: 0;
+                text-align: center;
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .sidebar-footer {
+                margin-top: 14px;
+                padding-top: 12px;
+            }
+
+            .main-content {
+                padding: 20px 16px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <!-- Menu Lateral -->
     <div class="sidebar">
-        <h1>Sistema de<br>Monitoramento<br>Pluviométrico</h1>
-        <button onclick="openTab('sobre')" id="btn-sobre">Sobre o Projeto</button>
-        <button onclick="openTab('monitoramento')" id="btn-monitoramento">Monitoramento</button>
-        <button onclick="openTab('historico')" id="btn-historico" class="active">Histórico de Alertas</button>
-        <button onclick="openTab('geral')" id="btn-geral">Histórico Geral</button>
+        <div class="sidebar-top">
+            <h1>Sistema de<br>Monitoramento<br>Pluviométrico</h1>
+            <div class="sidebar-nav">
+                <button onclick="openTab('sobre')" id="btn-sobre">Sobre o Projeto</button>
+                <button onclick="openTab('monitoramento')" id="btn-monitoramento">Monitoramento</button>
+                <button onclick="openTab('historico')" id="btn-historico" class="active">Histórico de Alertas</button>
+                <button onclick="openTab('geral')" id="btn-geral">Histórico Geral</button>
+            </div>
+        </div>
+
+        <!-- Logo UMC no Rodapé do Menu Lateral (Assinatura Institucional) -->
+        <div class="sidebar-footer">
+            <div class="sidebar-logo-box" title="Universidade de Mogi das Cruzes">
+                <svg width="160" height="44" viewBox="0 0 175 56" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo Universidade de Mogi das Cruzes - UMC">
+                    <!-- Tipografia UMC -->
+                    <text x="87.5" y="29" text-anchor="middle" fill="#FFFFFF" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="27" letter-spacing="2">UMC</text>
+                    <line x1="12" y1="36" x2="163" y2="36" stroke="#0088FF" stroke-width="1.5" stroke-opacity="0.7"/>
+                    <text x="87.5" y="48" text-anchor="middle" fill="#A0A6B8" font-family="'Segoe UI', Arial, sans-serif" font-weight="600" font-size="8.4" letter-spacing="0.45">UNIVERSIDADE DE MOGI DAS CRUZES</text>
+                </svg>
+            </div>
+            <span>TCC • Engenharia Elétrica</span>
+        </div>
     </div>
 
     <!-- Conteúdo Principal -->
@@ -311,9 +520,18 @@
         <!-- ABA 1: Sobre o Projeto -->
         <div id="tab-sobre" class="tab-content">
             <div class="card">
+                <!-- Logo Oficial Tipográfico da UMC em Destaque -->
                 <div class="logo-container">
-                    <img src="logo-umc.png" alt="Logo UMC" onerror="this.style.display='none'">
+                    <div class="umc-hero-badge">
+                        <svg width="240" height="68" viewBox="0 0 240 68" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Universidade de Mogi das Cruzes">
+                            <!-- Identidade Textual Limpa -->
+                            <text x="120" y="36" text-anchor="middle" fill="#003D82" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="35" letter-spacing="2.5">UMC</text>
+                            <rect x="20" y="43" width="200" height="2.2" rx="1.1" fill="#009B4D"/>
+                            <text x="120" y="58" text-anchor="middle" fill="#2B3445" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="10" letter-spacing="0.5">UNIVERSIDADE DE MOGI DAS CRUZES</text>
+                        </svg>
+                    </div>
                 </div>
+
                 <h2>Sobre o Projeto</h2>
                 <p>O Sistema de Monitoramento Pluviométrico Utilizando IoT é um projeto acadêmico desenvolvido com o objetivo de criar uma solução tecnológica acessível para o monitoramento de níveis de água em áreas suscetíveis a enchentes e alagamentos.</p>
                 <p>Este projeto foi desenvolvido por Bianca Luiza de Souza Villela, Felipe Ramos Costa e José Marcos Alves Neves, alunos do curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC), como Trabalho de Conclusão de Curso (TCC).</p>
@@ -362,7 +580,7 @@
                 </div>
 
                 <div class="reset-btn-container">
-                    <button class="btn-reset" onclick="zerarContadores()">Zerar Histórico e Registros</button>
+                    <button class="btn-reset" onclick="abrirModalConfirmacao()">Zerar Histórico e Registros</button>
                 </div>
             </div>
         </div>
@@ -390,12 +608,27 @@
                 </div>
 
                 <div class="reset-btn-container">
-                    <button class="btn-reset" onclick="zerarContadores()">Apagar Histórico Geral</button>
+                    <button class="btn-reset" onclick="abrirModalConfirmacao()">Apagar Histórico Geral</button>
                 </div>
             </div>
         </div>
 
     </div>
+
+    <!-- Modal de Confirmação para Reset -->
+    <div id="modal-confirmacao" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+        <div class="modal-box">
+            <h3 id="modal-titulo">Confirmar Limpeza de Dados</h3>
+            <p>Tem certeza que deseja apagar todos os contadores e o histórico geral na nuvem? Essa ação não pode ser desfeita.</p>
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" onclick="fecharModalConfirmacao()">Cancelar</button>
+                <button class="btn-modal-confirm" onclick="executarLimpezaDados()">Sim, Apagar Tudo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de Notificação -->
+    <div id="toast-feedback">Histórico e contadores limpos com sucesso!</div>
 
     <!-- Script de Integração com Firebase -->
     <script>
@@ -486,7 +719,8 @@
                                 <tr>
                                     <td>${item.data_hora || '---'}</td>
                                     <td><strong>${item.nivel || '---'}</strong></td>
-                                `;
+                                </tr>
+                            `;
                         });
                         tbody.innerHTML = htmlTabela;
                     } else {
@@ -512,34 +746,55 @@
             }
         }
 
-        function zerarContadores() {
-            if (confirm("Tem certeza que deseja apagar todos os contadores e o histórico geral? Essa ação não pode ser desfeita.")) {
-                const novosContadores = { verde: 0, amarelo: 0, vermelho: 0 };
-
-                const p1 = fetch(urlFirebase + "contadores.json", {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(novosContadores)
-                });
-
-                const p2 = fetch(urlFirebase + "historico_geral.json", {
-                    method: 'DELETE'
-                });
-
-                Promise.all([p1, p2])
-                    .then(() => {
-                        document.getElementById('contador-verde').innerText = 0;
-                        document.getElementById('contador-amarelo').innerText = 0;
-                        document.getElementById('contador-vermelho').innerText = 0;
-                        document.getElementById('tabela-historico-geral').innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
-                        alert("Histórico e contadores limpos com sucesso!");
-                    })
-                    .catch(error => console.error("Erro ao limpar dados:", error));
-            }
+        function abrirModalConfirmacao() {
+            document.getElementById('modal-confirmacao').classList.add('open');
         }
 
-        atualizarDados();
-        setInterval(atualizarDados, 3000);
+        function fecharModalConfirmacao() {
+            document.getElementById('modal-confirmacao').classList.remove('open');
+        }
+
+        function mostrarToast(mensagem) {
+            const toast = document.getElementById('toast-feedback');
+            toast.innerText = mensagem;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3500);
+        }
+
+        function executarLimpezaDados() {
+            fecharModalConfirmacao();
+            const novosContadores = { verde: 0, amarelo: 0, vermelho: 0 };
+
+            const p1 = fetch(urlFirebase + "contadores.json", {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(novosContadores)
+            });
+
+            const p2 = fetch(urlFirebase + "historico_geral.json", {
+                method: 'DELETE'
+            });
+
+            Promise.all([p1, p2])
+                .then(() => {
+                    document.getElementById('contador-verde').innerText = 0;
+                    document.getElementById('contador-amarelo').innerText = 0;
+                    document.getElementById('contador-vermelho').innerText = 0;
+                    document.getElementById('tabela-historico-geral').innerHTML = `<tr><td colspan="2" style="text-align: center; color: #6a7185;">Nenhum registro encontrado.</td></tr>`;
+                    mostrarToast("Histórico e contadores limpos com sucesso!");
+                })
+                .catch(error => {
+                    console.error("Erro ao limpar dados:", error);
+                    mostrarToast("Erro ao limpar os dados no servidor.");
+                });
+        }
+
+        window.onload = function () {
+            atualizarDados();
+            setInterval(atualizarDados, 3000);
+        };
     </script>
 
 </body>
