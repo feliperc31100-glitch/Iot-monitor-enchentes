@@ -217,11 +217,19 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
-            padding: 40px;
+            padding: 36px 40px;
             overflow-y: auto;
             position: relative;
+        }
+
+        /* Centraliza verticalmente abas mais compactas */
+        #tab-monitoramento,
+        #tab-historico,
+        #tab-geral {
+            margin-top: auto;
+            margin-bottom: auto;
         }
 
         /* Alerta de Erro / Sequência Incorreta */
@@ -346,6 +354,12 @@
             display: block;
         }
 
+        #tab-sobre {
+            max-width: 960px;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
         /* Cards e Estilização */
         .card {
             background-color: #1b1f2e;
@@ -365,7 +379,7 @@
 
         .card p {
             color: #c0c6d8;
-            line-height: 1.6;
+            line-height: 1.65;
             margin-bottom: 15px;
             font-size: 15px;
             text-align: justify;
@@ -377,7 +391,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-bottom: 26px;
+            margin-bottom: 24px;
+            text-align: center;
         }
 
         .umc-hero-badge {
@@ -389,6 +404,279 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 18px;
+        }
+
+        .sobre-hero-title {
+            font-size: 23px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.3;
+            margin-bottom: 6px;
+        }
+
+        .sobre-hero-subtitle {
+            font-size: 14px;
+            color: #64b5f6;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        /* Seções Internas da Aba Sobre */
+        .sobre-section {
+            margin-top: 26px;
+        }
+
+        .sobre-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .sobre-section-title::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background-color: #0056ff;
+            border-radius: 2px;
+        }
+
+        .sobre-highlight-box {
+            background-color: #12141d;
+            border: 1px solid #282c3f;
+            border-left: 4px solid #0088ff;
+            border-radius: 10px;
+            padding: 18px 20px;
+        }
+
+        .sobre-highlight-box p {
+            margin-bottom: 0;
+            font-size: 14.5px;
+        }
+
+        .stat-pill {
+            display: inline-block;
+            background: rgba(0, 136, 255, 0.16);
+            color: #58b4ff;
+            border: 1px solid rgba(0, 136, 255, 0.35);
+            padding: 1px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        /* Grid de 4 Camadas da Arquitetura IoT */
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .arch-card {
+            background-color: #12141d;
+            border: 1px solid #282c3f;
+            border-radius: 10px;
+            padding: 18px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .arch-card:hover {
+            transform: translateY(-2px);
+            border-color: #0056ff;
+        }
+
+        .arch-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .arch-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: rgba(0, 86, 255, 0.2);
+            color: #4da3ff;
+            font-weight: 800;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .arch-card h4 {
+            font-size: 15px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .arch-card p {
+            font-size: 13.5px;
+            color: #a8b0c6;
+            line-height: 1.55;
+            margin-bottom: 0;
+            text-align: left;
+        }
+
+        /* Fluxo Operacional e Níveis de Risco */
+        .stages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .stage-card {
+            background-color: #12141d;
+            border: 1px solid #282c3f;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .stage-card.verde { border-top: 3px solid #00C853; }
+        .stage-card.amarelo { border-top: 3px solid #FFD600; }
+        .stage-card.vermelho { border-top: 3px solid #D50000; }
+
+        .stage-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .stage-card.verde .stage-tag { background: rgba(0, 200, 83, 0.15); color: #00C853; }
+        .stage-card.amarelo .stage-tag { background: rgba(255, 214, 0, 0.15); color: #FFD600; }
+        .stage-card.vermelho .stage-tag { background: rgba(213, 0, 0, 0.18); color: #ff5252; }
+
+        .stage-card h5 {
+            font-size: 14.5px;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .stage-card p {
+            font-size: 13px;
+            color: #a8b0c6;
+            line-height: 1.5;
+            margin-bottom: 0;
+            text-align: left;
+        }
+
+        /* Viabilidade Econômica & Roadmap */
+        .dual-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 14px;
+        }
+
+        .cost-box {
+            background: linear-gradient(160deg, #12141d 0%, #151c2e 100%);
+            border: 1px solid #283554;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .cost-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #8fa3c7;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .cost-value {
+            font-size: 30px;
+            font-weight: 800;
+            color: #00C853;
+            margin-bottom: 8px;
+        }
+
+        .cost-box p {
+            font-size: 13.5px;
+            color: #b5bdd4;
+            line-height: 1.5;
+            margin-bottom: 0;
+            text-align: left;
+        }
+
+        .roadmap-box {
+            background-color: #12141d;
+            border: 1px solid #282c3f;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .roadmap-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .roadmap-list li {
+            font-size: 13.5px;
+            color: #c0c6d8;
+            line-height: 1.45;
+            padding-left: 18px;
+            position: relative;
+        }
+
+        .roadmap-list li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #0088ff;
+            font-weight: bold;
+        }
+
+        /* Créditos Acadêmicos */
+        .credits-footer {
+            margin-top: 26px;
+            padding-top: 20px;
+            border-top: 1px solid #282c3f;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .authors-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .author-chip {
+            background-color: #12141d;
+            border: 1px solid #2e344b;
+            color: #e2e6f3;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .institution-tag {
+            font-size: 13px;
+            color: #8f96ad;
+            text-align: right;
+            line-height: 1.5;
         }
 
         /* Status LEDs */
@@ -625,6 +913,20 @@
             .main-content {
                 padding: 20px 16px;
             }
+
+            .card {
+                padding: 24px 18px;
+            }
+
+            .arch-grid,
+            .stages-grid,
+            .dual-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .institution-tag {
+                text-align: left;
+            }
         }
     </style>
 </head>
@@ -699,21 +1001,127 @@
         <!-- ABA 1: Sobre o Projeto -->
         <div id="tab-sobre" class="tab-content">
             <div class="card">
-                <!-- Logo Oficial Tipográfico da UMC em Destaque -->
+                <!-- 1. Cabeçalho Institucional da UMC -->
                 <div class="logo-container">
                     <div class="umc-hero-badge">
                         <svg width="240" height="68" viewBox="0 0 240 68" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Universidade de Mogi das Cruzes">
-                            <!-- Identidade Textual Limpa -->
                             <text x="120" y="36" text-anchor="middle" fill="#003D82" font-family="'Segoe UI', Arial, sans-serif" font-weight="900" font-size="35" letter-spacing="2.5">UMC</text>
                             <rect x="20" y="43" width="200" height="2.2" rx="1.1" fill="#009B4D"/>
                             <text x="120" y="58" text-anchor="middle" fill="#2B3445" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="10" letter-spacing="0.5">UNIVERSIDADE DE MOGI DAS CRUZES</text>
                         </svg>
                     </div>
+                    <h2 class="sobre-hero-title" style="border: none; padding-bottom: 0; margin-bottom: 6px;">Sistema de Monitoramento Pluviométrico Utilizando IoT</h2>
+                    <span class="sobre-hero-subtitle">Aplicação de técnicas acessíveis para proteção socioambiental</span>
                 </div>
 
-                <h2>Sobre o Projeto</h2>
-                <p>O Sistema de Monitoramento Pluviométrico Utilizando IoT é um projeto acadêmico desenvolvido com o objetivo de criar uma solução tecnológica acessível para o monitoramento de níveis de água em áreas suscetíveis a enchentes e alagamentos.</p>
-                <p>Este projeto foi desenvolvido por Bianca Luiza de Souza Villela, Felipe Ramos Costa e José Marcos Alves Neves, alunos do curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC), como Trabalho de Conclusão de Curso (TCC).</p>
+                <!-- 2. Contexto e Justificativa -->
+                <div class="sobre-section">
+                    <h3 class="sobre-section-title">Contexto e Justificativa</h3>
+                    <div class="sobre-highlight-box">
+                        <p>
+                            O agravamento das mudanças climáticas e o crescimento urbano desordenado têm intensificado eventos hidrológicos extremos no Brasil, onde os desastres associados a chuvas (enchentes e deslizamentos) registraram um aumento de aproximadamente <span class="stat-pill">+222%</span> na última década. Diante da vulnerabilidade das infraestruturas de drenagem, este projeto propõe uma solução acessível e escalável baseada em sistemas embarcados e Internet das Coisas (IoT) para detecção antecipada da elevação do nível da água e mitigação de riscos à população.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3. Arquitetura em 4 Camadas -->
+                <div class="sobre-section">
+                    <h3 class="sobre-section-title">Arquitetura IoT em 4 Camadas</h3>
+                    <div class="arch-grid">
+                        <div class="arch-card">
+                            <div class="arch-card-header">
+                                <span class="arch-badge">01</span>
+                                <h4>Camada de Sensoriamento</h4>
+                            </div>
+                            <p>Composta por 3 sensores de nível posicionados em alturas estratégicas para identificar a elevação gradual da água em três faixas distintas: <strong>Seguro</strong>, <strong>Atenção</strong> e <strong>Crítico</strong>.</p>
+                        </div>
+
+                        <div class="arch-card">
+                            <div class="arch-card-header">
+                                <span class="arch-badge">02</span>
+                                <h4>Camada de Processamento</h4>
+                            </div>
+                            <p>Centralizada no microcontrolador <strong>ESP32</strong> (processador dual-core de até 240 MHz), que interpreta as leituras dos sensores, valida a progressão física e aplica lógica de histerese para estabilidade operacional.</p>
+                        </div>
+
+                        <div class="arch-card">
+                            <div class="arch-card-header">
+                                <span class="arch-badge">03</span>
+                                <h4>Camada de Comunicação</h4>
+                            </div>
+                            <p>Utiliza a conectividade <strong>Wi-Fi integrada</strong> ao ESP32 para sincronizar dados em tempo real na nuvem via <strong>Firebase Realtime Database</strong>, alimentando esta interface web responsiva sem necessidade de cabos.</p>
+                        </div>
+
+                        <div class="arch-card">
+                            <div class="arch-card-header">
+                                <span class="arch-badge">04</span>
+                                <h4>Camada de Atuação</h4>
+                            </div>
+                            <p>Executa respostas imediatas por meio de sinalização visual local (LEDs Verde, Amarelo e Vermelho), acionamento automático de <strong>bomba de drenagem</strong> via módulo relé e envio de alertas remotos pelo <strong>Telegram</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Fluxo Operacional e Níveis de Risco -->
+                <div class="sobre-section">
+                    <h3 class="sobre-section-title">Fluxo Operacional e Níveis de Risco</h3>
+                    <div class="stages-grid">
+                        <div class="stage-card verde">
+                            <span class="stage-tag">Nível 1 • Seguro</span>
+                            <h5>LED Verde Ativo</h5>
+                            <p>Apenas o primeiro sensor está acionado. Indica volume de água dentro da normalidade e ausência de risco de alagamento.</p>
+                        </div>
+
+                        <div class="stage-card amarelo">
+                            <span class="stage-tag">Nível 2 • Atenção</span>
+                            <h5>LED Amarelo Ativo</h5>
+                            <p>O segundo sensor detecta elevação progressiva do nível da água, sinalizando necessidade de acompanhamento preventivo.</p>
+                        </div>
+
+                        <div class="stage-card vermelho">
+                            <span class="stage-tag">Nível 3 • Crítico</span>
+                            <h5>LED Vermelho + Resposta</h5>
+                            <p>Acionamento do terceiro sensor dispara alerta máximo, liga automaticamente a <strong>bomba de drenagem</strong> e envia notificação remota.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Viabilidade Econômica & Roadmap Futuro -->
+                <div class="sobre-section">
+                    <h3 class="sobre-section-title">Viabilidade Econômica e Roadmap Futuro</h3>
+                    <div class="dual-grid">
+                        <div class="cost-box">
+                            <span class="cost-label">Custo Total Estimado do Protótipo</span>
+                            <div class="cost-value">R$ 175,00</div>
+                            <p>Composto por ESP32, 3 sensores de nível, LEDs, resistores, módulo relé, mini bomba d'água, protoboard/cabos e fonte CC — valor substancialmente inferior ao de sistemas industriais.</p>
+                        </div>
+
+                        <div class="roadmap-box">
+                            <span class="cost-label" style="display: block; margin-bottom: 10px;">Próximas Expansões Previstas</span>
+                            <ul class="roadmap-list">
+                                <li><strong>Robustez de Campo:</strong> Migração da estrutura física para materiais duráveis adequados a ambientes externos adversos.</li>
+                                <li><strong>Dados Meteorológicos:</strong> Cruzamento das leituras locais com previsão de chuvas, umidade e alertas climáticos online.</li>
+                                <li><strong>Geolocalização (GPS):</strong> Mapeamento interativo de múltiplos pontos monitorados alinhado ao conceito de <em>Smart Cities</em>.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Créditos Acadêmicos -->
+                <div class="credits-footer">
+                    <div>
+                        <span class="cost-label" style="display: block; margin-bottom: 4px;">Autores do Projeto</span>
+                        <div class="authors-group">
+                            <span class="author-chip">Bianca Luiza de Souza Villela</span>
+                            <span class="author-chip">Felipe Ramos Costa</span>
+                            <span class="author-chip">José Marcos Alves Neves</span>
+                        </div>
+                    </div>
+                    <div class="institution-tag">
+                        <strong style="color: #ffffff;">Universidade de Mogi das Cruzes (UMC)</strong><br>
+                        Curso de Engenharia Elétrica • TCC • 2026
+                    </div>
+                </div>
             </div>
         </div>
 
