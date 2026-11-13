@@ -212,7 +212,7 @@
         .tab-content {
             display: none;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
         }
 
         .tab-content.active {
@@ -228,40 +228,197 @@
             border: 1px solid #282c3f;
         }
 
-        .card h2 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: #ffffff;
-            border-bottom: 2px solid #0056ff;
-            padding-bottom: 10px;
+        /* Estilos customizados da Aba Sobre (Inspirados no layout da imagem) */
+        .about-section-title {
+            color: #0088ff;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .card p {
+        .about-section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .about-section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 16px;
+            background-color: #0056ff;
+            border-radius: 2px;
+        }
+
+        .about-text-box {
+            background-color: #12141d;
+            border: 1px solid #282c3f;
+            padding: 20px 25px;
+            border-radius: 10px;
             color: #c0c6d8;
             line-height: 1.6;
-            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: justify;
+            margin-bottom: 25px;
+        }
+
+        .highlight-badge {
+            background-color: #0056ff33;
+            color: #3b9eff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .grid-2cols {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2cols {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-box {
+            background-color: #12141d;
+            border: 1px solid #282c3f;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .info-box-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .info-box-num {
+            background-color: #0056ff;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .info-box-title {
+            color: #ffffff;
             font-size: 15px;
+            font-weight: 600;
+        }
+
+        .info-box p {
+            color: #a0a6b8;
+            font-size: 13.5px;
+            line-height: 1.5;
+            margin: 0;
             text-align: justify;
         }
 
-        .academic-header {
-            background-color: #12141d;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border-left: 4px solid #0056ff;
+        .risk-box-green { border-left: 4px solid #00C853; }
+        .risk-box-yellow { border-left: 4px solid #FFD600; }
+        .risk-box-red { border-left: 4px solid #D50000; }
+
+        .risk-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 8px;
         }
 
-        .academic-header h3 {
+        .risk-tag.green { background-color: rgba(0, 200, 83, 0.15); color: #00C853; }
+        .risk-tag.yellow { background-color: rgba(255, 214, 0, 0.15); color: #FFD600; }
+        .risk-tag.red { background-color: rgba(213, 0, 0, 0.15); color: #ff3333; }
+
+        .price-highlight {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00C853;
+            margin-bottom: 12px;
+        }
+
+        .roadmap-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .roadmap-list li {
+            font-size: 13.5px;
+            color: #a0a6b8;
+            line-height: 1.5;
+            text-align: justify;
+        }
+
+        .roadmap-list li strong {
             color: #ffffff;
-            font-size: 16px;
-            margin-bottom: 4px;
         }
 
-        .academic-header span {
-            color: #0088ff;
-            font-size: 13px;
+        .authors-footer-container {
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid #282c3f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .authors-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6a7185;
+            margin-bottom: 8px;
             font-weight: 600;
+        }
+
+        .author-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .author-pill {
+            background-color: #12141d;
+            border: 1px solid #282c3f;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #c0c6d8;
+            font-weight: 500;
+        }
+
+        .university-info {
+            text-align: right;
+        }
+
+        .university-info .uni-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .university-info .uni-details {
+            font-size: 12px;
+            color: #6a7185;
+            margin-top: 2px;
         }
 
         /* Status LEDs */
@@ -481,17 +638,106 @@
         <!-- Notificação de Erro na Sequência dos Sensores -->
         <div id="banner-erro">⚠️ ERRO DE LEITURA: Os níveis físicos não respeitam a progressão da enchente (ex: nível intermediário ou crítico ativado sem os anteriores).</div>
 
-        <!-- ABA 1: Sobre o Projeto (Atualizada com base no TCC) -->
+        <!-- ABA 1: Sobre o Projeto (Formatada exatamente como na imagem de referência) -->
         <div id="tab-sobre" class="tab-content">
             <div class="card">
-                <div class="academic-header">
-                    <h3>Universidade de Mogi das Cruzes (UMC)</h3>
-                    <span>Trabalho de Conclusão de Curso (TCC) — Engenharia Elétrica</span>
+                
+                <div class="about-section-title">CONTEXTO E JUSTIFICATIVA</div>
+                <div class="about-text-box">
+                    O agravamento das mudanças climáticas e o crescimento urbano desordenado têm intensificado eventos hidrológicos extremos no Brasil, onde os desastres associados a chuvas (enchentes e deslizamentos) registraram um aumento de aproximadamente <span class="highlight-badge">+222%</span> na última década. Diante da vulnerabilidade das infraestruturas de drenagem, este projeto propõe uma solução acessível e escalável baseada em sistemas embarcados e Internet das Coisas (IoT) para detecção antecipada da elevação do nível da água e mitigação de riscos à população.
                 </div>
-                <h2>Sobre o Projeto</h2>
-                <p>O <strong>Sistema de Monitoramento Pluviométrico Utilizando IoT</strong> é um projeto acadêmico desenvolvido como Trabalho de Conclusão de Curso (TCC) pelos discentes <strong>Bianca Luiza de Souza Villela</strong>, <strong>Felipe Ramos Costa</strong> e <strong>José Marcos Alves Neves</strong>, vinculados ao curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC)[cite: 3, 4].</p>
-                <p>Diante do avanço de eventos climáticos extremos e dos severos impactos das enchentes urbanas na sociedade[cite: 7, 10], o projeto propõe uma solução tecnológica acessível e escalável baseada em <strong>Internet das Coisas (IoT)</strong>[cite: 8]. O sistema utiliza o microcontrolador ESP32 para realizar o monitoramento contínuo dos níveis de água por meio de sensores segmentados, permitindo a classificação em três faixas operacionais: <em>Seguro</em> (Verde), <em>Atenção</em> (Amarelo) e <em>Crítico</em> (Vermelho)[cite: 12, 14, 19, 20].</p>
-                <p>Além da sinalização visual local por LEDs e do acionamento automático de um sistema de bombeamento de drenagem para mitigação de alagamentos[cite: 9, 13, 14, 18], a arquitetura integra computação em nuvem via <strong>Firebase</strong> para persistência de dados em tempo real, controle de versão via <strong>GitHub</strong> e envio de alertas remotos instantâneos via <strong>Telegram</strong>[cite: 21, 23, 26].</p>
+
+                <div class="about-section-title">ARQUITETURA IOT EM 4 CAMADAS</div>
+                <div class="grid-2cols">
+                    <div class="info-box">
+                        <div class="info-box-header">
+                            <span class="info-box-num">01</span>
+                            <span class="info-box-title">Camada de Sensoriamento</span>
+                        </div>
+                        <p>Composta por 3 sensores de nível posicionados em alturas estratégicas para identificar a elevação gradual da água em três faixas distintas: Seguro, Atenção e Crítico.</p>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-header">
+                            <span class="info-box-num">02</span>
+                            <span class="info-box-title">Camada de Processamento</span>
+                        </div>
+                        <p>Centralizada no microcontrolador <strong>ESP32</strong> (processador dual-core de até 240 MHz), que interpreta as leituras dos sensores, valida a progressão física e aplica lógica de histerese para estabilidade operacional.</p>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-header">
+                            <span class="info-box-num">03</span>
+                            <span class="info-box-title">Camada de Comunicação</span>
+                        </div>
+                        <p>Utiliza a conectividade Wi-Fi integrada ao ESP32 para sincronizar dados em tempo real na nuvem via <strong>Firebase Realtime Database</strong>, alimentando esta interface web responsiva sem necessidade de cabos.</p>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-header">
+                            <span class="info-box-num">04</span>
+                            <span class="info-box-title">Camada de Atuação</span>
+                        </div>
+                        <p>Executa respostas imediatas por meio de sinalização visual local (LEDs Verde, Amarelo e Vermelho), acionamento automático de <strong>bomba de drenagem</strong> via módulo relé e envio de alertas remotos pelo Telegram.</p>
+                    </div>
+                </div>
+
+                <div class="about-section-title">FLUXO OPERACIONAL E NÍVEIS DE RISCO</div>
+                <div class="grid-2cols">
+                    <div class="info-box risk-box-green">
+                        <span class="risk-tag green">NÍVEL 1 • SEGURO</span>
+                        <div class="info-box-title" style="margin-bottom: 8px;">LED Verde Ativo</div>
+                        <p>Apenas o primeiro sensor está acionado. Indica volume de água dentro da normalidade e ausência de risco de alagamento.</p>
+                    </div>
+
+                    <div class="info-box risk-box-yellow">
+                        <span class="risk-tag yellow">NÍVEL 2 • ATENÇÃO</span>
+                        <div class="info-box-title" style="margin-bottom: 8px;">LED Amarelo Ativo</div>
+                        <p>O segundo sensor detecta elevação progressiva do nível da água, sinalizando necessidade de acompanhamento preventivo.</p>
+                    </div>
+                </div>
+                <div style="margin-bottom: 25px;">
+                    <div class="info-box risk-box-red" style="width: 100%;">
+                        <span class="risk-tag red">NÍVEL 3 • CRÍTICO</span>
+                        <div class="info-box-title" style="margin-bottom: 8px;">LED Vermelho + Resposta</div>
+                        <p>Acionamento do terceiro sensor dispara alerta máximo, liga automaticamente a <strong>bomba de drenagem</strong> e envia notificação remota.</p>
+                    </div>
+                </div>
+
+                <div class="about-section-title">VIABILIDADE ECONÔMICA E ROADMAP FUTURO</div>
+                <div class="grid-2cols">
+                    <div class="info-box">
+                        <div class="info-box-title" style="margin-bottom: 15px;">CUSTO TOTAL ESTIMADO DO PROTÓTIPO</div>
+                        <div class="price-highlight">R$ 175,00</div>
+                        <p>Composto por ESP32, 3 sensores de nível, LEDs, resistores, módulo relé, mini bomba d'água, protoboard/cabos e fonte CC — valor substancialmente inferior ao de sistemas industriais.</p>
+                    </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title" style="margin-bottom: 12px;">PRÓXIMAS EXPANSÕES PREVISTAS</div>
+                        <ul class="roadmap-list">
+                            <li><strong>• Robustez de Campo:</strong> Migração da estrutura física para materiais duráveis adequados a ambientes externos adversos.</li>
+                            <li><strong>• Dados Meteorológicos:</strong> Cruzamento das leituras locais com previsão de chuvas, umidade e alertas climáticos online.</li>
+                            <li><strong>• Geolocalização (GPS):</strong> Mapeamento interativo de múltiplos pontos monitorados alinhado ao conceito de <em>Smart Cities</em>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Rodapé de Autores e Instituição -->
+                <div class="authors-footer-container">
+                    <div>
+                        <div class="authors-title">Autores do Projeto</div>
+                        <div class="author-badges">
+                            <span class="author-pill">Bianca Luiza de Souza Villela</span>
+                            <span class="author-pill">Felipe Ramos Costa</span>
+                            <span class="author-pill">José Marcos Alves Neves</span>
+                        </div>
+                    </div>
+                    <div class="university-info">
+                        <div class="uni-name">Universidade de Mogi das Cruzes (UMC)</div>
+                        <div class="uni-details">Curso de Engenharia Elétrica • TCC • 2026</div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
