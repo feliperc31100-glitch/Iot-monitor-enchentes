@@ -135,40 +135,6 @@
             display: none;
         }
 
-        /* Rodapé da Sidebar com Logo UMC */
-        .sidebar-footer {
-            margin-top: auto;
-            padding-top: 20px;
-            border-top: 1px solid #222638;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .umc-brand-box {
-            background-color: #ffffff;
-            padding: 10px 14px;
-            border-radius: 8px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-            transition: padding 0.3s ease;
-        }
-
-        .sidebar.collapsed .umc-brand-box {
-            padding: 8px 4px;
-        }
-
-        .umc-brand-box img {
-            max-height: 44px;
-            max-width: 100%;
-            object-fit: contain;
-        }
-
         /* Conteúdo Principal */
         .main-content {
             flex: 1;
@@ -232,28 +198,6 @@
             margin-bottom: 15px;
             font-size: 15px;
             text-align: justify;
-        }
-
-        /* Logo UMC no Card Sobre */
-        .about-logo-wrapper {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 25px;
-        }
-
-        .about-logo-pill {
-            background-color: #ffffff;
-            padding: 12px 28px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .about-logo-pill img {
-            height: 55px;
-            object-fit: contain;
         }
 
         /* Status LEDs */
@@ -457,13 +401,6 @@
                 <span class="nav-text">Histórico Geral</span>
             </button>
         </div>
-
-        <!-- Logo UMC no rodapé da barra lateral (garante visibilidade em todas as abas) -->
-        <div class="sidebar-footer">
-            <div class="umc-brand-box" title="Universidade de Mogi das Cruzes">
-                <img id="sidebar-umc-logo" alt="Logo UMC">
-            </div>
-        </div>
     </div>
 
     <!-- Conteúdo Principal -->
@@ -475,11 +412,6 @@
         <!-- ABA 1: Sobre o Projeto -->
         <div id="tab-sobre" class="tab-content">
             <div class="card">
-                <div class="about-logo-wrapper">
-                    <div class="about-logo-pill">
-                        <img id="about-umc-logo" alt="Universidade de Mogi das Cruzes">
-                    </div>
-                </div>
                 <h2>Sobre o Projeto</h2>
                 <p>O Sistema de Monitoramento Pluviométrico Utilizando IoT é um projeto acadêmico desenvolvido com o objetivo de criar uma solução tecnológica acessível para o monitoramento de níveis de água em áreas suscetíveis a enchentes e alagamentos.</p>
                 <p>Este projeto foi desenvolvido por Bianca Luiza de Souza Villela, Felipe Ramos Costa e José Marcos Alves Neves, alunos do curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC), como Trabalho de Conclusão de Curso (TCC).</p>
@@ -565,49 +497,10 @@
 
     <!-- Script de Integração com Firebase e UI -->
     <script>
-        // Logo vetorial oficial estilizado da UMC (embutido via Data URI para nunca quebrar)
-        const svgLogoUMCCompleto = `data:image/svg+xml;utf8,` + encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 90">
-                <rect width="320" height="90" fill="none"/>
-                <!-- Símbolo geométrico azul UMC -->
-                <path d="M22 18 H42 V52 C42 63 34 70 22 70 C10 70 2 63 2 52 V18 H22 Z" fill="#003876" opacity="0.12"/>
-                <path d="M14 20 V50 C14 57 19 61 26 61 C33 61 38 57 38 50 V20" fill="none" stroke="#003876" stroke-width="7" stroke-linecap="round"/>
-                <circle cx="26" cy="24" r="4.5" fill="#0072CE"/>
-                <!-- Sigla UMC -->
-                <text x="54" y="54" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="44" fill="#003876" letter-spacing="-1">UMC</text>
-                <!-- Linha divisória -->
-                <line x1="164" y1="20" x2="164" y2="68" stroke="#0072CE" stroke-width="2.5"/>
-                <!-- Texto institucional -->
-                <text x="174" y="34" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" fill="#003876">UNIVERSIDADE</text>
-                <text x="174" y="50" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" fill="#003876">DE MOGI DAS</text>
-                <text x="174" y="66" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" fill="#0072CE">CRUZES</text>
-            </svg>
-        `);
-
-        const svgLogoUMCCompacto = `data:image/svg+xml;utf8,` + encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 50">
-                <text x="55" y="36" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="32" fill="#003876" letter-spacing="-1">UMC</text>
-                <rect x="20" y="42" width="70" height="4" rx="2" fill="#0072CE"/>
-            </svg>
-        `);
-
-        // Carrega os logos inicialmente (tenta arquivo local se existir, senão usa o SVG embutido)
-        const sidebarLogo = document.getElementById('sidebar-umc-logo');
-        const aboutLogo = document.getElementById('about-umc-logo');
-        
-        sidebarLogo.src = svgLogoUMCCompleto;
-        aboutLogo.src = svgLogoUMCCompleto;
-
         // Função para recolher/expandir a barra lateral
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('collapsed');
-
-            if (sidebar.classList.contains('collapsed')) {
-                sidebarLogo.src = svgLogoUMCCompacto;
-            } else {
-                sidebarLogo.src = svgLogoUMCCompleto;
-            }
         }
 
         function openTab(tabName) {
