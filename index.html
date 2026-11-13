@@ -26,42 +26,147 @@
             background-color: #181b28;
             display: flex;
             flex-direction: column;
-            padding: 25px 20px;
+            padding: 20px;
             border-right: 1px solid #222638;
             flex-shrink: 0;
+            transition: width 0.3s ease, padding 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar.collapsed {
+            width: 76px;
+            padding: 20px 12px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+
+        .sidebar.collapsed .sidebar-header {
+            justify-content: center;
         }
 
         .sidebar h1 {
             color: #0088ff;
-            font-size: 20px;
-            margin-bottom: 40px;
-            line-height: 1.4;
+            font-size: 19px;
+            line-height: 1.35;
             font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: opacity 0.2s ease, width 0.3s ease;
         }
 
-        .sidebar button {
+        .sidebar.collapsed h1 {
+            display: none;
+        }
+
+        .toggle-btn {
+            background-color: #222638;
+            border: 1px solid #2e334d;
+            color: #ffffff;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background-color 0.2s ease;
+        }
+
+        .toggle-btn:hover {
+            background-color: #0056ff;
+            border-color: #0056ff;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .sidebar button.nav-btn {
             background: none;
             border: none;
             color: #a0a6b8;
             text-align: left;
-            padding: 14px 16px;
+            padding: 13px 14px;
             margin-bottom: 8px;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             font-size: 15px;
             cursor: pointer;
             width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
-        .sidebar button:hover {
+        .sidebar.collapsed button.nav-btn {
+            justify-content: center;
+            padding: 13px 0;
+        }
+
+        .sidebar button.nav-btn:hover {
             background-color: #222638;
             color: #ffffff;
         }
 
-        .sidebar button.active {
+        .sidebar button.nav-btn.active {
             background-color: #0056ff;
             color: #ffffff;
             font-weight: 600;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .sidebar.collapsed .nav-text {
+            display: none;
+        }
+
+        /* Rodapé da Sidebar com Logo UMC */
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid #222638;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .umc-brand-box {
+            background-color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            transition: padding 0.3s ease;
+        }
+
+        .sidebar.collapsed .umc-brand-box {
+            padding: 8px 4px;
+        }
+
+        .umc-brand-box img {
+            max-height: 44px;
+            max-width: 100%;
+            object-fit: contain;
         }
 
         /* Conteúdo Principal */
@@ -129,14 +234,25 @@
             text-align: justify;
         }
 
-        /* Logo UMC */
-        .logo-container {
-            text-align: center;
-            margin-bottom: 20px;
+        /* Logo UMC no Card Sobre */
+        .about-logo-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
         }
 
-        .logo-container img {
-            max-height: 70px;
+        .about-logo-pill {
+            background-color: #ffffff;
+            padding: 12px 28px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-logo-pill img {
+            height: 55px;
             object-fit: contain;
         }
 
@@ -146,6 +262,7 @@
             padding: 40px 30px;
             border-radius: 12px;
             width: 480px;
+            max-width: 100%;
             text-align: center;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             margin: 0 auto;
@@ -294,12 +411,59 @@
 <body>
 
     <!-- Menu Lateral -->
-    <div class="sidebar">
-        <h1>Sistema de<br>Monitoramento<br>Pluviométrico</h1>
-        <button onclick="openTab('sobre')" id="btn-sobre">Sobre o Projeto</button>
-        <button onclick="openTab('monitoramento')" id="btn-monitoramento">Monitoramento</button>
-        <button onclick="openTab('historico')" id="btn-historico" class="active">Histórico de Alertas</button>
-        <button onclick="openTab('geral')" id="btn-geral">Histórico Geral</button>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>Sistema de<br>Monitoramento<br>Pluviométrico</h1>
+            <button class="toggle-btn" onclick="toggleSidebar()" title="Recolher/Expandir Menu">
+                <svg id="toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <div class="nav-buttons">
+            <button onclick="openTab('sobre')" id="btn-sobre" class="nav-btn" title="Sobre o Projeto">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="nav-text">Sobre o Projeto</span>
+            </button>
+
+            <button onclick="openTab('monitoramento')" id="btn-monitoramento" class="nav-btn" title="Monitoramento">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <span class="nav-text">Monitoramento</span>
+            </button>
+
+            <button onclick="openTab('historico')" id="btn-historico" class="nav-btn active" title="Histórico de Alertas">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="nav-text">Histórico de Alertas</span>
+            </button>
+
+            <button onclick="openTab('geral')" id="btn-geral" class="nav-btn" title="Histórico Geral">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                </svg>
+                <span class="nav-text">Histórico Geral</span>
+            </button>
+        </div>
+
+        <!-- Logo UMC no rodapé da barra lateral (garante visibilidade em todas as abas) -->
+        <div class="sidebar-footer">
+            <div class="umc-brand-box" title="Universidade de Mogi das Cruzes">
+                <img id="sidebar-umc-logo" alt="Logo UMC">
+            </div>
+        </div>
     </div>
 
     <!-- Conteúdo Principal -->
@@ -311,8 +475,10 @@
         <!-- ABA 1: Sobre o Projeto -->
         <div id="tab-sobre" class="tab-content">
             <div class="card">
-                <div class="logo-container">
-                    <img src="logo-umc.png" alt="Logo UMC" onerror="this.style.display='none'">
+                <div class="about-logo-wrapper">
+                    <div class="about-logo-pill">
+                        <img id="about-umc-logo" alt="Universidade de Mogi das Cruzes">
+                    </div>
                 </div>
                 <h2>Sobre o Projeto</h2>
                 <p>O Sistema de Monitoramento Pluviométrico Utilizando IoT é um projeto acadêmico desenvolvido com o objetivo de criar uma solução tecnológica acessível para o monitoramento de níveis de água em áreas suscetíveis a enchentes e alagamentos.</p>
@@ -397,13 +563,58 @@
 
     </div>
 
-    <!-- Script de Integração com Firebase -->
+    <!-- Script de Integração com Firebase e UI -->
     <script>
+        // Logo vetorial oficial estilizado da UMC (embutido via Data URI para nunca quebrar)
+        const svgLogoUMCCompleto = `data:image/svg+xml;utf8,` + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 90">
+                <rect width="320" height="90" fill="none"/>
+                <!-- Símbolo geométrico azul UMC -->
+                <path d="M22 18 H42 V52 C42 63 34 70 22 70 C10 70 2 63 2 52 V18 H22 Z" fill="#003876" opacity="0.12"/>
+                <path d="M14 20 V50 C14 57 19 61 26 61 C33 61 38 57 38 50 V20" fill="none" stroke="#003876" stroke-width="7" stroke-linecap="round"/>
+                <circle cx="26" cy="24" r="4.5" fill="#0072CE"/>
+                <!-- Sigla UMC -->
+                <text x="54" y="54" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="44" fill="#003876" letter-spacing="-1">UMC</text>
+                <!-- Linha divisória -->
+                <line x1="164" y1="20" x2="164" y2="68" stroke="#0072CE" stroke-width="2.5"/>
+                <!-- Texto institucional -->
+                <text x="174" y="34" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" fill="#003876">UNIVERSIDADE</text>
+                <text x="174" y="50" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" fill="#003876">DE MOGI DAS</text>
+                <text x="174" y="66" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" fill="#0072CE">CRUZES</text>
+            </svg>
+        `);
+
+        const svgLogoUMCCompacto = `data:image/svg+xml;utf8,` + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 50">
+                <text x="55" y="36" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="32" fill="#003876" letter-spacing="-1">UMC</text>
+                <rect x="20" y="42" width="70" height="4" rx="2" fill="#0072CE"/>
+            </svg>
+        `);
+
+        // Carrega os logos inicialmente (tenta arquivo local se existir, senão usa o SVG embutido)
+        const sidebarLogo = document.getElementById('sidebar-umc-logo');
+        const aboutLogo = document.getElementById('about-umc-logo');
+        
+        sidebarLogo.src = svgLogoUMCCompleto;
+        aboutLogo.src = svgLogoUMCCompleto;
+
+        // Função para recolher/expandir a barra lateral
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+
+            if (sidebar.classList.contains('collapsed')) {
+                sidebarLogo.src = svgLogoUMCCompacto;
+            } else {
+                sidebarLogo.src = svgLogoUMCCompleto;
+            }
+        }
+
         function openTab(tabName) {
             const tabs = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => tab.classList.remove('active'));
 
-            const buttons = document.querySelectorAll('.sidebar button');
+            const buttons = document.querySelectorAll('.sidebar button.nav-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
 
             document.getElementById('tab-' + tabName).classList.add('active');
@@ -486,7 +697,8 @@
                                 <tr>
                                     <td>${item.data_hora || '---'}</td>
                                     <td><strong>${item.nivel || '---'}</strong></td>
-                                `;
+                                </tr>
+                            `;
                         });
                         tbody.innerHTML = htmlTabela;
                     } else {
