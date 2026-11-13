@@ -135,7 +135,7 @@
             display: none;
         }
 
-        /* Rodapé da Sidebar com Identificação Textual UMC */
+        /* Rodapé da Sidebar com Link para a UMC */
         .sidebar-footer {
             margin-top: auto;
             padding-top: 15px;
@@ -149,6 +149,13 @@
             padding: 10px;
             border-radius: 8px;
             transition: all 0.3s ease;
+            display: block;
+            text-decoration: none;
+        }
+
+        .institutional-badge:hover {
+            border-color: #0056ff;
+            background-color: #181b28;
         }
 
         .institutional-badge .inst-acronym {
@@ -459,12 +466,12 @@
             </button>
         </div>
 
-        <!-- Identificação Textual UMC -->
+        <!-- Identificação UMC com Link para o Site Oficial -->
         <div class="sidebar-footer">
-            <div class="institutional-badge" title="Universidade de Mogi das Cruzes">
+            <a href="https://www.umc.br/" target="_blank" class="institutional-badge" title="Acessar o site da Universidade de Mogi das Cruzes (UMC)">
                 <span class="inst-acronym">UMC</span>
                 <span class="inst-name">Universidade de Mogi das Cruzes</span>
-            </div>
+            </a>
         </div>
     </div>
 
@@ -474,16 +481,17 @@
         <!-- Notificação de Erro na Sequência dos Sensores -->
         <div id="banner-erro">⚠️ ERRO DE LEITURA: Os níveis físicos não respeitam a progressão da enchente (ex: nível intermediário ou crítico ativado sem os anteriores).</div>
 
-        <!-- ABA 1: Sobre o Projeto -->
+        <!-- ABA 1: Sobre o Projeto (Atualizada com base no TCC) -->
         <div id="tab-sobre" class="tab-content">
             <div class="card">
                 <div class="academic-header">
                     <h3>Universidade de Mogi das Cruzes (UMC)</h3>
-                    <span>Trabalho de Conclusão de Curso - Engenharia Elétrica</span>
+                    <span>Trabalho de Conclusão de Curso (TCC) — Engenharia Elétrica</span>
                 </div>
                 <h2>Sobre o Projeto</h2>
-                <p>O Sistema de Monitoramento Pluviométrico Utilizando IoT é um projeto acadêmico desenvolvido com o objetivo de criar uma solução tecnológica acessível para o monitoramento de níveis de água em áreas suscetíveis a enchentes e alagamentos.</p>
-                <p>Este projeto foi desenvolvido por Bianca Luiza de Souza Villela, Felipe Ramos Costa e José Marcos Alves Neves, alunos do curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC), como Trabalho de Conclusão de Curso (TCC).</p>
+                <p>O <strong>Sistema de Monitoramento Pluviométrico Utilizando IoT</strong> é um projeto acadêmico desenvolvido como Trabalho de Conclusão de Curso (TCC) pelos discentes <strong>Bianca Luiza de Souza Villela</strong>, <strong>Felipe Ramos Costa</strong> e <strong>José Marcos Alves Neves</strong>, vinculados ao curso de Engenharia Elétrica da Universidade de Mogi das Cruzes (UMC)[cite: 3, 4].</p>
+                <p>Diante do avanço de eventos climáticos extremos e dos severos impactos das enchentes urbanas na sociedade[cite: 7, 10], o projeto propõe uma solução tecnológica acessível e escalável baseada em <strong>Internet das Coisas (IoT)</strong>[cite: 8]. O sistema utiliza o microcontrolador ESP32 para realizar o monitoramento contínuo dos níveis de água por meio de sensores segmentados, permitindo a classificação em três faixas operacionais: <em>Seguro</em> (Verde), <em>Atenção</em> (Amarelo) e <em>Crítico</em> (Vermelho)[cite: 12, 14, 19, 20].</p>
+                <p>Além da sinalização visual local por LEDs e do acionamento automático de um sistema de bombeamento de drenagem para mitigação de alagamentos[cite: 9, 13, 14, 18], a arquitetura integra computação em nuvem via <strong>Firebase</strong> para persistência de dados em tempo real, controle de versão via <strong>GitHub</strong> e envio de alertas remotos instantâneos via <strong>Telegram</strong>[cite: 21, 23, 26].</p>
             </div>
         </div>
 
